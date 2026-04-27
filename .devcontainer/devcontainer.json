@@ -3,6 +3,17 @@
   "build": { "dockerfile": "Dockerfile" },
   "workspaceFolder": "/nano-code",
   "remoteUser": "vscode",
+  "remoteEnv": {
+    "OPENAI_API_KEY": "${localEnv:OPENAI_API_KEY}",
+    "ANTHROPIC_API_KEY": "${localEnv:ANTHROPIC_API_KEY}"
+  },
+  "forwardPorts": [1455],
+  "portsAttributes": {
+    "1455": {
+      "label": "Codex OAuth callback",
+      "onAutoForward": "silent"
+    }
+  },
   "mounts": [
     "source=${localWorkspaceFolder},target=/nano-code,type=bind"
   ],

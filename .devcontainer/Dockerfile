@@ -11,7 +11,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
-RUN npm install -g @openai/codex \
+# Evidence checked on 2026-04-27:
+# - OpenAI Help Center documents OPENAI_API_KEY for Codex CLI authentication:
+#   https://help.openai.com/en/articles/11096431-openai-codex-ci-getting-started
+# - Anthropic/Docker docs recommend ANTHROPIC_API_KEY for containerized Claude Code auth:
+#   https://docs.docker.com/ai/sandboxes/agents/claude-code/
+# Browser OAuth callbacks can hang in containers when host localhost is not forwarded.
+RUN npm install -g @openai/codex @anthropic-ai/claude-code \
  && npm cache clean --force
 
 RUN useradd -ms /bin/bash vscode

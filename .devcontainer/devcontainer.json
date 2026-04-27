@@ -3,10 +3,6 @@
   "build": { "dockerfile": "Dockerfile" },
   "workspaceFolder": "/nano-code",
   "remoteUser": "vscode",
-  "remoteEnv": {
-    "OPENAI_API_KEY": "${localEnv:OPENAI_API_KEY}",
-    "ANTHROPIC_API_KEY": "${localEnv:ANTHROPIC_API_KEY}"
-  },
   "forwardPorts": [1455],
   "portsAttributes": {
     "1455": {
@@ -15,7 +11,9 @@
     }
   },
   "mounts": [
-    "source=${localWorkspaceFolder},target=/nano-code,type=bind"
+    "source=${localWorkspaceFolder},target=/nano-code,type=bind",
+    "source=nano-code-codex-auth,target=/home/vscode/.codex,type=volume",
+    "source=nano-code-claude-auth,target=/home/vscode/.claude,type=volume"
   ],
   "postCreateCommand": "if [ ! -f package.json ]; then bun init -y; fi && bun install || true"
 }

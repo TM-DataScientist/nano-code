@@ -12,11 +12,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
  && rm -rf /var/lib/apt/lists/*
 
 # Evidence checked on 2026-04-27:
-# - OpenAI Help Center documents OPENAI_API_KEY for Codex CLI authentication:
-#   https://help.openai.com/en/articles/11096431-openai-codex-ci-getting-started
-# - Anthropic/Docker docs recommend ANTHROPIC_API_KEY for containerized Claude Code auth:
-#   https://docs.docker.com/ai/sandboxes/agents/claude-code/
-# Browser OAuth callbacks can hang in containers when host localhost is not forwarded.
+# - OpenAI Codex CLI docs say ChatGPT Plus/Pro/Business/Edu/Enterprise plans include Codex,
+#   and first run prompts for ChatGPT account or API key auth:
+#   https://developers.openai.com/codex/cli
+# - Anthropic Claude Code auth docs say Pro/Max users can log in with a Claude.ai account:
+#   https://code.claude.com/docs/en/authentication
+# - Anthropic troubleshooting says devcontainer login hangs usually mean the localhost
+#   callback is blocked; use the manual code flow if the redirect cannot reach the CLI:
+#   https://support.claude.com/en/articles/14552646-troubleshoot-claude-code-installation-and-authentication
 RUN npm install -g @openai/codex @anthropic-ai/claude-code \
  && npm cache clean --force
 
@@ -30,6 +33,6 @@ ENV DEVCONTAINER=true
 ENV PATH="/home/vscode/.bun/bin:$PATH"
 ENV BUN_INSTALL_CACHE=/home/vscode/.bun-cache
 
-RUN mkdir -p "$BUN_INSTALL_CACHE"
+RUN mkdir -p "$BUN_INSTALL_CACHE" /home/vscode/.codex /home/vscode/.claude
 
 CMD ["bash"]

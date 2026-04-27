@@ -5,6 +5,7 @@ import { join } from 'path';
 const WORKSPACE_ROOT = join(process.cwd(), 'workspace');
 
 function validateBranchName(name: string): void {
+    // gh コマンドへ渡すブランチ名を事前に検証し、オプション注入や不正文字を避けます。
     if (!name || name.length > 120) {
         throw new Error('ブランチ名が不正です');
     }
@@ -20,6 +21,7 @@ function validateBranchName(name: string): void {
 }
 
 function validateTitle(title: string): void {
+    // PRタイトルはCLI引数として渡すため、改行や制御文字を拒否します。
     if (!title || title.length > 200) {
         throw new Error('PRタイトルが不正です');
     }
@@ -29,6 +31,7 @@ function validateTitle(title: string): void {
 }
 
 function writeTempFile(content: string, prefix: string): string {
+    // PR本文やコメント本文は長くなり得るため、--body-file 用の一時ファイルとして保存します。
     if (!existsSync(WORKSPACE_ROOT)) {
         mkdirSync(WORKSPACE_ROOT, { recursive: true });
     }
@@ -74,6 +77,7 @@ export const createPullRequest = {
         validateBranchName(args.base);
 
         const listResult = await execCommand.execute({
+            // 既存PRがあれば新規作成ではなく更新するため、まず gh pr list で確認します。
             commandName: 'gh',
             commandArgs: ['pr', 'list', '--head', args.head, '--base', args.base, '--state', 'open', '--json', 'number']
         });
@@ -81,6 +85,7 @@ export const createPullRequest = {
         const bodyFile = writeTempFile(args.body, 'pr-body');
 
         try {
+            // gh の JSON 出力を JavaScript オブジェクトへ変換します。
             const existingPRs = JSON.parse(listResult || '[]');
             if (Array.isArray(existingPRs) && existingPRs.length > 0) {
                 const prNumber = String(existingPRs[0].number);
@@ -101,6 +106,7 @@ export const createPullRequest = {
             });
             return `PRを作成しました: ${result}`;
         } finally {
+            // finally は成功・失敗のどちらでも実行されます。一時ファイル削除に向いています。
             try { unlinkSync(bodyFile); } catch { /* ignore */ }
         }
     }

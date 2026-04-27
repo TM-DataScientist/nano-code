@@ -2,6 +2,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 
+// ES Modules では CommonJS の __filename / __dirname が標準では使えません。
+// import.meta.url をファイルパスへ変換して、Python の __file__ に近い値を作っています。
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -12,9 +14,13 @@ const __dirname = path.dirname(__filename);
  * - workspaceRoot 配下に AGENTS.md があれば連結して返す。
  */
 export function loadInstructions(workspaceRoot: string): string {
+  // path.resolve は絶対パスへ正規化します。
+  // prompt.md はこの TypeScript ファイルと同じ core ディレクトリに置かれている前提です。
   const basePath = path.resolve(path.join(__dirname, 'prompt.md'));
   const base = fs.readFileSync(basePath, 'utf-8');
 
+  // workspaceRoot はエージェントが作業するプロジェクトのルートです。
+  // そこに AGENTS.md があれば、共通プロンプトに追加してプロジェクト固有ルールとして扱います。
   const agentsPath = path.join(workspaceRoot, 'AGENTS.md');
   if (fs.existsSync(agentsPath)) {
     const agents = fs.readFileSync(agentsPath, 'utf-8');

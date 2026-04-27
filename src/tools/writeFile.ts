@@ -3,6 +3,8 @@ import * as path from 'path';
 
 const WORKSPACE_ROOT = path.resolve(process.cwd(), './workspace');
 
+// workspace 内へファイルを書き込むツール実装です。
+// content は文字列なので、バイナリファイルではなくテキストファイル向けです。
 async function writeFileExecute(args: {
     path: string;
     content: string;
@@ -15,9 +17,12 @@ async function writeFileExecute(args: {
     }
 
     const dir = path.dirname(absolutePath);
+    // recursive: true は Python の os.makedirs(..., exist_ok=True) に近く、親ディレクトリもまとめて作ります。
     await fs.mkdir(dir, { recursive: true });
 
     try {
+        // 既存ファイルがある場合だけ .backup を作ります。
+        // fs.access が失敗した場合は catch に入り、新規ファイルとして扱います。
         await fs.access(absolutePath);
         const backupPath = `${absolutePath}.backup`;
         await fs.copyFile(absolutePath, backupPath);
@@ -31,6 +36,7 @@ async function writeFileExecute(args: {
 }
 
 export const writeFile = {
+    // needsApproval: true なので、Agent は実行前にユーザー承認を求めます。
     name: 'writeFile',
     description:
         '指定されたパスにファイルを作成または上書きする。既存ファイルは自動的にバックアップされる。ディレクトリが存在しない場合は自動的に作成される。',

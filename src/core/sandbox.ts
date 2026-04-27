@@ -1,6 +1,8 @@
 // src/core/sandbox.ts
 import { spawn } from 'child_process';
 
+// SandboxOptions は、サンドボックス内でコマンドを動かすときの任意設定です。
+// `cwd?: string` の `?` は「指定してもしなくてもよい」ことを表します。
 export interface SandboxOptions {
   cwd?: string;                 // 作業ディレクトリ
   allowNetwork?: boolean;       // ネットワークアクセスの許可
@@ -14,6 +16,8 @@ export interface SandboxResult {
 }
 
 export class Sandbox {
+  // run は外部コマンドを bubblewrap(bwrap) 経由で起動し、標準出力・標準エラー・終了コードを返します。
+  // Python の subprocess.run(..., capture_output=True) に近い役割です。
   async run(
     command: string,
     args: string[],
@@ -44,6 +48,8 @@ export class Sandbox {
 
     // 環境変数の再設定（PATHなどを引き継ぐ）
     const envVars = {
+      // `...options.env` は辞書の展開です。後ろに書いた値が前の値を上書きします。
+      // Python の `{**base_env, **options_env}` と同じ発想です。
       PATH: process.env.PATH || '/usr/local/bin:/usr/bin:/bin',
       HOME: '/tmp',
       ...options.env,
@@ -64,6 +70,7 @@ export class Sandbox {
 
     // プロセス生成と結果取得
     return new Promise((resolve) => {
+      // spawn はプロセスを開始し、stdout/stderr の data イベントで出力を少しずつ受け取ります。
       const child = spawn('bwrap', bwrapArgs, {
         stdio: 'pipe',
       });

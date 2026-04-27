@@ -10,6 +10,7 @@ import { LLMApiError } from '../types';
 import OpenAI from 'openai';
 
 export type ProviderConfig = {
+    // 省略可能な設定です。未指定の場合は環境変数やデフォルトURLを使います。
     apiKey?: string;
     baseURL?: string;
     maxRetries?: number;
@@ -18,6 +19,8 @@ export type ProviderConfig = {
 function mapOpenAIFinishReason(
     finishReason: string | null | undefined
 ): GenerateTextResult['finishReason'] {
+    // OpenAI固有の終了理由を、このプロジェクト共通の finishReason に変換します。
+    // 戻り値型の `GenerateTextResult['finishReason']` は、既存型の特定プロパティ型だけを再利用する書き方です。
     switch (finishReason) {
         case 'stop':
             return 'stop';
@@ -33,6 +36,8 @@ function mapOpenAIFinishReason(
 }
 
 function parseToolCallArgs(raw: string): Record<string, unknown> {
+    // LLMから来るツール引数はJSON文字列です。
+    // 壊れたJSONでもプログラム全体を落とさず、空オブジェクトとして扱います。
     try {
         return raw ? JSON.parse(raw) : {};
     } catch {
@@ -41,6 +46,8 @@ function parseToolCallArgs(raw: string): Record<string, unknown> {
 }
 
 function mapMessages(messages: GenerateParams['messages']) {
+    // Nano Code共通の Message 形式を、OpenAI Chat Completions API の形式へ変換します。
+    // switch で role を見ると、TypeScript が message の型を自動で絞り込みます。
     return messages.map((message): OpenAI.ChatCompletionMessageParam => {
         switch (message.role) {
             case 'assistant': {
@@ -75,6 +82,8 @@ function mapMessages(messages: GenerateParams['messages']) {
 }
 
 export function createOpenAI(config: ProviderConfig = {}): Provider {
+    // `??` は null または undefined のときだけ右側を使う演算子です。
+    // 空文字はそのまま空文字として扱われる点が `||` と違います。
     const apiKey = config.apiKey ?? process.env.OPENAI_API_KEY;
     const baseURL = config.baseURL ?? 'https://api.openai.com/v1';
 
@@ -90,6 +99,8 @@ export function createOpenAI(config: ProviderConfig = {}): Provider {
 
     const provider = (modelId: string): LanguageModel => ({
         async doGenerate(params: GenerateParams): Promise<GenerateTextResult> {
+            // ツール定義がある場合だけ OpenAI の function calling 形式へ変換します。
+            // `as const` は type が単なる string ではなく、文字列リテラル 'function' だと固定する指定です。
             const tools =
                 params.tools && params.tools.length > 0
                     ? params.tools.map((tool) => ({
@@ -127,6 +138,8 @@ export function createOpenAI(config: ProviderConfig = {}): Provider {
                         (
                             tc
                         ): tc is OpenAI.ChatCompletionMessageFunctionToolCall =>
+                            // `tc is ...` は型ガードです。
+                            // filter 後の配列要素が function tool call だと TypeScript に伝えます。
                             tc.type === 'function'
                     ) ?? [];
 
@@ -169,6 +182,8 @@ export function createOpenAI(config: ProviderConfig = {}): Provider {
             }
         },
         async *doStream(params: GenerateParams): AsyncIterable<StreamChunk> {
+            // ストリーミングではツール呼び出しの名前や arguments が複数チャンクに分かれて届くことがあります。
+            // そのため toolCallBuffer に一時保存し、最後に ToolCall[] へ組み立てます。
             const tools =
                 params.tools && params.tools.length > 0
                     ? params.tools.map((tool) => ({

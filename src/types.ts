@@ -1,9 +1,17 @@
+// このファイルは、プロジェクト全体で共有する「型」を集めた場所です。
+// Pythonでいう dataclass / TypedDict / Protocol に近い役割を、TypeScriptの type と interface で表しています。
+
 // 第3章で定義： LLMが理解するツール定義（JSONスキーマ + 実行関数）
 export type Tool = {
+  // オブジェクトの各プロパティに `: string` のように型を書きます。
   name: string;
   description: string;
+  // Record<string, unknown> は「文字列キーを持つ辞書」です。
+  // Python の dict[str, Any] に近いですが、unknown は使う前に型確認が必要な安全寄りの型です。
   parameters: Record<string, unknown>;
+  // Promise<string> は「非同期処理の結果として、後で string が返る」という意味です。
   execute: (args: Record<string, unknown>) => Promise<string>;
+  // `?` は省略可能なプロパティです。Pythonの Optional というより「キーが無いこともある」に近いです。
   needsApproval?: boolean; // 第5章で定義
 };
 
@@ -21,6 +29,8 @@ export type ToolResult = {
 };
 
 // 第3章で定義：モデルとやりとりするメッセージ構造
+// `|` は union 型です。role の値によって、必要なプロパティが変わることを表します。
+// これは Python の複数の TypedDict を Union する設計に近く、switch 文で role を見ると型が絞り込まれます。
 export type Message =
   | { role: 'user' | 'system'; content: string }
   | { role: 'assistant'; content: string; toolCalls?: ToolCall[] }
@@ -34,6 +44,7 @@ export type Usage = {
 };
 
 // ストリーミングレスポンスの読み取り時に発行されるチャンク
+// interface もオブジェクトの形を定義します。ここではストリームから流れてくる1イベントの形です。
 export interface StreamChunk {
   kind: 'delta' | 'event' | 'done';
   text?: string;
@@ -61,8 +72,12 @@ export type GenerateParams = {
 };
 
 // 各プロバイダが実装する言語モデルのインタフェース
+// interface は「このメソッドを持っていれば LanguageModel として扱える」という契約です。
+// OpenAI / Anthropic / Google の実装差を、この共通インターフェースで隠しています。
 export interface LanguageModel {
   doGenerate(params: GenerateParams): Promise<GenerateTextResult>;
+  // AsyncIterable は `for await...of` で1件ずつ非同期に受け取れる値です。
+  // Python の async generator に近い使い方をします。
   doStream?(params: GenerateParams): AsyncIterable<StreamChunk>;
 }
 
@@ -72,6 +87,8 @@ export type Provider = (modelId: string) => LanguageModel;
 // プロバイダ固有のエラーを公開する統一APIエラー
 export class LLMApiError extends Error {
   constructor(
+    // constructor 引数に `public` を付けると、同名のプロパティ定義と代入を同時に行います。
+    // Pythonの `self.status = status` を短く書く構文だと考えると分かりやすいです。
     public status: number,
     public provider: string,
     public code?: string,

@@ -2,6 +2,8 @@ import { describe, expect, it } from 'bun:test';
 import { collectStreamResult, generateStreamText } from './generate-stream';
 import type { LanguageModel, StreamChunk, ToolCall } from '../types';
 
+// ストリーミング処理の単体テストです。
+// 実APIの代わりに async generator を持つモックモデルを使います。
 describe('generateStreamText', () => {
     it('throws when model does not support streaming', async () => {
         const model: LanguageModel = {
@@ -16,15 +18,17 @@ describe('generateStreamText', () => {
         });
 
         await expect(async () => {
+            // for await で全チャンクを読み切ろうとした時点で例外が出ることを確認します。
             for await (const _ of iter) {
                 // no-op
             }
-        }).toThrow('Model does not support streaming');
+        }).toThrow('このモデルはストリーミングに対応していません');
     });
 });
 
 describe('collectStreamResult', () => {
     it('accumulates deltas and returns done payload', async () => {
+        // delta チャンクを順に足し合わせると "Hello" になるテストデータです。
         const toolCalls: ToolCall[] = [
             {
                 toolCallId: 'call_0',
@@ -50,6 +54,7 @@ describe('collectStreamResult', () => {
                 return { text: 'ok', finishReason: 'stop' };
             },
             async *doStream() {
+                // async generator で、用意した chunks を1つずつ返します。
                 for (const chunk of chunks) {
                     yield chunk;
                 }

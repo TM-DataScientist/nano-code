@@ -12,6 +12,7 @@ const MAX_OUTPUT_LENGTH = 2000;
 
 // 環境変数はホワイトリスト方式（機密情報の漏洩防止）
 const SAFE_ENV = {
+    // APIキーなどをサブプロセスへ渡さないため、必要最小限だけ明示します。
     PATH: process.env.PATH || '/usr/local/bin:/usr/bin:/bin',
     HOME: '/tmp',
     LANG: process.env.LANG || 'C.UTF-8',
@@ -25,6 +26,7 @@ type ExecCommandInput = {
 async function execCommandSandboxExecute(
     args: Record<string, unknown>
 ): Promise<string> {
+    // 通常版 execCommand と同じ入力検証を行ったうえで、設定により Sandbox 経由で実行します。
     const input = args as ExecCommandInput;
     let commandName = '';
     let commandArgs: string[] = [];
@@ -80,6 +82,7 @@ async function execCommandSandboxExecute(
 
     // サンドボックス分岐
     if (process.platform === 'linux' && config.sandbox) {
+        // WindowsやmacOSでは bubblewrap が使えないため、Linuxかつ config.sandbox=true のときだけ有効化します。
         const sandbox = new Sandbox();
         const result = await sandbox.run(commandName, commandArgs, {
             allowNetwork: false,
@@ -94,6 +97,7 @@ async function execCommandSandboxExecute(
 
     // 通常実行（第4章と同じ）
     return new Promise((resolve, reject) => {
+        // サンドボックス無効時も shell:false と許可リストで最低限の安全策を維持します。
         const child = spawn(commandName, commandArgs, {
             cwd: WORKSPACE_ROOT,
             timeout: 30000,

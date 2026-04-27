@@ -4,9 +4,12 @@ import * as path from 'path';
 const WORKSPACE_ROOT = path.resolve(process.cwd(), './workspace');
 const MAX_FILE_SIZE = 100 * 1024; // 100KB
 
+// LLMから渡された引数を受け取り、workspace 配下のファイルだけを読み込む実行関数です。
+// args の型 `{ path: string }` は「path という文字列プロパティを持つオブジェクト」を意味します。
 async function readFileExecute(args: { path: string }): Promise<string> {
     const absolutePath = path.resolve(WORKSPACE_ROOT, args.path);
 
+    // path.resolve 後に prefix を確認し、`../` で workspace 外へ出るパストラバーサルを防ぎます。
     const allowedPrefix = WORKSPACE_ROOT + path.sep;
     if (!absolutePath.startsWith(allowedPrefix) && absolutePath !== WORKSPACE_ROOT) {
         throw new Error(`アクセス拒否: ${args.path} はワークスペース外です`);
@@ -41,6 +44,8 @@ async function readFileExecute(args: { path: string }): Promise<string> {
 }
 
 export const readFile = {
+    // このオブジェクト全体が Tool 定義です。LLMには name/description/parameters が渡り、
+    // 実際の実行時には execute 関数が呼ばれます。
     name: 'readFile',
     description:
         'ワークスペース内の指定されたパスのファイル内容を文字列として読み込む。ファイルが存在しない場合はエラーを返す。100KBを超える巨大ファイルは読み込めない（コンテキストウィンドウ保護のため）。相対パスまたは絶対パスを指定できる。',

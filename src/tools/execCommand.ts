@@ -8,6 +8,8 @@ const MAX_OUTPUT_LENGTH = 2000;
 
 type Quote = '"' | "'" | null;
 type ExecCommandInput = {
+    // unknown は「値は来るが、まだ型が分からない」ことを表します。
+    // 実行前に typeof や Array.isArray で確認してから使います。
     command?: unknown;
     commandName?: unknown;
     commandArgs?: unknown;
@@ -15,6 +17,7 @@ type ExecCommandInput = {
 
 // 引用符付き引数をサポートする最小限のコマンドパーサ
 export function parseCommand(input: string): string[] {
+    // shell: false で安全に spawn するため、1本の文字列をコマンド名と引数配列へ分解します。
     const tokens: string[] = [];
     let current = '';
     let quote: Quote = null;
@@ -84,6 +87,7 @@ export function parseCommand(input: string): string[] {
 }
 
 async function execCommandExecute(args: Record<string, unknown>): Promise<string> {
+    // LLMからの入力は信用せず、まず期待する形かどうかを確認します。
     const input = args as ExecCommandInput;
     let commandName = '';
     let commandArgs: string[] = [];
@@ -91,6 +95,7 @@ async function execCommandExecute(args: Record<string, unknown>): Promise<string
 
     if (typeof input.command === 'string') {
         const command = input.command;
+        // ; や $ など、シェルで別コマンド実行につながる文字を拒否します。
         const dangerousChars = /[;&`$]/;
         if (dangerousChars.test(command)) {
             throw new Error('セキュリティ上の理由により、シェルメタ文字を含むコマンドは実行できません');
@@ -118,6 +123,7 @@ async function execCommandExecute(args: Record<string, unknown>): Promise<string
     }
 
     if (!ALLOWED_COMMANDS.includes(commandName)) {
+        // 許可リスト方式にすることで、想定外のコマンド実行を防ぎます。
         throw new Error(`コマンド ${commandName} は許可されていません`);
     }
 
@@ -139,6 +145,8 @@ async function execCommandExecute(args: Record<string, unknown>): Promise<string
     }
 
     return new Promise((resolve, reject) => {
+        // shell: false により、シェルを経由せず直接コマンドを起動します。
+        // これにより `; rm -rf /` のようなシェル構文が解釈されにくくなります。
         const child = spawn(commandName, commandArgs, {
             cwd: WORKSPACE_ROOT,
             timeout: 30000,

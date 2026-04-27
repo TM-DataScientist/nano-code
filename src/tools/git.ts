@@ -5,6 +5,7 @@ import { execCommand } from './execCommand';
 const WORKSPACE_ROOT = join(process.cwd(), 'workspace');
 
 function validateBranchName(name: string): void {
+    // Gitコマンドへ渡す文字列なので、長さ・先頭文字・使える文字を事前に制限します。
     if (!name || name.length > 120) {
         throw new Error('ブランチ名が不正です');
     }
@@ -23,6 +24,7 @@ function validateBranchName(name: string): void {
 }
 
 function validateFilePath(filePath: string): void {
+    // `git add -- <path>` に渡すパスとして危険な制御文字やオプション風の値を拒否します。
     if (!filePath) {
         throw new Error('ファイルパスが空です');
     }
@@ -35,6 +37,8 @@ function validateFilePath(filePath: string): void {
 }
 
 function writeTempFile(content: string, prefix: string): string {
+    // commit message をコマンドライン引数で直接渡さず、一時ファイル経由にします。
+    // 改行を含むメッセージでも安全に扱いやすくなります。
     if (!existsSync(WORKSPACE_ROOT)) {
         mkdirSync(WORKSPACE_ROOT, { recursive: true });
     }
@@ -95,6 +99,8 @@ export const commitChanges = {
         required: ['message', 'files']
     },
     execute: async (args: { message: string; files: string[] }) => {
+        // execute に async アロー関数を直接渡しています。
+        // Pythonでいう「関数オブジェクトを辞書に入れておく」設計に近いです。
         if (!args.message || /[\0]/.test(args.message)) {
             throw new Error('コミットメッセージが不正です');
         }
@@ -110,6 +116,7 @@ export const commitChanges = {
             }
 
             for (const file of args.files) {
+                // `git add -- file` の `--` は、以降をオプションではなくパスとして扱わせる区切りです。
                 validateFilePath(file);
                 await execCommand.execute({
                     commandName: 'git',

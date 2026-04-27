@@ -32,11 +32,15 @@ function mapAnthropicFinishReason(
 }
 
 type NonSystemMessage = Exclude<
+    // Exclude<A, B> は union 型 A から B に当てはまる型を取り除くユーティリティ型です。
+    // Anthropic API では system を別パラメータで渡すため、通常メッセージから除外しています。
     GenerateParams['messages'][number],
     { role: 'system' }
 >;
 
 function mapMessages(messages: NonSystemMessage[]): Anthropic.MessageParam[] {
+    // Nano Code共通の Message 形式を Anthropic Messages API の形式へ変換します。
+    // Anthropicでは tool の結果も user role の tool_result として渡す点がOpenAIと違います。
     return messages.map((message): Anthropic.MessageParam => {
         if (message.role === 'assistant') {
             const content: Anthropic.ContentBlockParam[] = [];
@@ -92,6 +96,8 @@ export function createAnthropic(config: ProviderConfig = {}): Provider {
 
 	return (modelId: string): LanguageModel => ({
 	        async doGenerate(params: GenerateParams): Promise<GenerateTextResult> {
+	            // system メッセージだけを抜き出し、Anthropic の system パラメータへ渡します。
+	            // `(m): m is NonSystemMessage => ...` は filter 後の型を絞る型ガードです。
 	            const systemMessages = params.messages.filter((m) => m.role === 'system');
 	            const messages = params.messages.filter(
 	                (m): m is NonSystemMessage => m.role !== 'system'
@@ -100,6 +106,7 @@ export function createAnthropic(config: ProviderConfig = {}): Provider {
 	            const system =
 	                systemMessages.length > 0
 	                    ? systemMessages.map((m) => ({
+	                          // `as const` により type が任意の string ではなく 'text' 固定になります。
 	                          type: 'text' as const,
 	                          text: m.content,
 	                      }))
@@ -134,6 +141,8 @@ export function createAnthropic(config: ProviderConfig = {}): Provider {
                 const text = textBlocks.map((block: any) => block.text).join('');
 
                 const toolUseBlocks = response.content.filter(
+                    // SDKの型が広いため、この教材では any を使って content block を取り出しています。
+                    // 実務ではSDKの詳細型を使ってさらに厳密にできます。
                     (block: any) => block.type === 'tool_use'
                 );
 
@@ -183,6 +192,8 @@ export function createAnthropic(config: ProviderConfig = {}): Provider {
             }
 	        },
 	        async *doStream(params: GenerateParams) {
+	            // Anthropicのストリームは event.type ごとに意味が分かれます。
+	            // text_delta は本文、input_json_delta はツール引数のJSON断片です。
 	            const systemMessages = params.messages.filter((m) => m.role === 'system');
 	            const messages = params.messages.filter(
 	                (m): m is NonSystemMessage => m.role !== 'system'
@@ -220,6 +231,7 @@ export function createAnthropic(config: ProviderConfig = {}): Provider {
 
                 const toolCalls: Record<string, ToolCall> = {};
                 const partialJsonBuffers: Record<string, string> = {};
+                // content block の index と tool_use id を対応付けるための辞書です。
                 const indexToId: Record<number, string> = {};
                 let finishReason: StreamChunk['finishReason'];
                 let usage: StreamChunk['usage'];

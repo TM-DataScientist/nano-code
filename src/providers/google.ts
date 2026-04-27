@@ -17,6 +17,8 @@ function mapGoogleFinishReason(
     finishReason: string | null | undefined,
     hasFunctionCall: boolean
 ): GenerateTextResult['finishReason'] {
+    // Geminiでは関数呼び出しが parts に含まれるため、finishReason だけでなく
+    // functionCall の有無も見て、このプロジェクト共通の終了理由へ変換します。
     if (hasFunctionCall) {
         return 'tool_calls';
     }
@@ -35,6 +37,8 @@ function mapGoogleFinishReason(
 }
 
 function convertMessages(messages: GenerateParams['messages']): Content[] {
+    // Nano Code共通の Message を Google GenAI SDK の Content[] へ変換します。
+    // Googleでは assistant 相当の role が 'model' という名前になっています。
     return messages
         .filter((m) => m.role !== 'system')
         .map((message) => {
@@ -71,6 +75,7 @@ function convertMessages(messages: GenerateParams['messages']): Content[] {
 }
 
 export function createGoogle(config: ProviderConfig = {}): Provider {
+    // Gemini APIキーは GEMINI_API_KEY と GOOGLE_API_KEY のどちらでも読めるようにしています。
     const apiKey =
         config.apiKey ?? process.env.GEMINI_API_KEY ?? process.env.GOOGLE_API_KEY;
 
@@ -84,6 +89,7 @@ export function createGoogle(config: ProviderConfig = {}): Provider {
 
     return (modelId: string): LanguageModel => ({
         async doGenerate(params: GenerateParams): Promise<GenerateTextResult> {
+            // system メッセージは通常の contents ではなく systemInstruction として渡します。
             const systemMessages = params.messages.filter((m) => m.role === 'system');
             const messages = params.messages.filter((m) => m.role !== 'system');
 
@@ -96,6 +102,7 @@ export function createGoogle(config: ProviderConfig = {}): Provider {
                 params.tools && params.tools.length > 0
                     ? [
                           {
+                              // Googleのツール定義では functionDeclarations という配列に変換します。
                               functionDeclarations: params.tools.map((tool) => ({
                                   name: tool.name,
                                   description: tool.description,
@@ -169,6 +176,7 @@ export function createGoogle(config: ProviderConfig = {}): Provider {
         },
 
         async *doStream(params: GenerateParams) {
+            // generateContentStream は非同期イテラブルを返すため、for await でチャンクを順に処理します。
             const systemMessages = params.messages.filter((m) => m.role === 'system');
 
             const systemInstruction =
@@ -211,6 +219,7 @@ export function createGoogle(config: ProviderConfig = {}): Provider {
                     const parts: any[] = candidate?.content?.parts ?? [];
 
                     for (const part of parts) {
+                        // 1つの chunk の中に、本文 text と functionCall の part が混在することがあります。
                         if (part.text) {
                             yield { kind: 'delta', text: part.text };
                         }

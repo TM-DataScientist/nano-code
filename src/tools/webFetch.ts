@@ -3,6 +3,8 @@ import type { Tool } from '../types';
 import { config } from '../config';
 
 async function webFetchExecute(args: Record<string, unknown>): Promise<string> {
+    // Tool の execute は汎用的に Record<string, unknown> を受けるため、
+    // ここで url を string として取り出しています。本番では typeof チェックを追加するとさらに安全です。
     const url = args.url as string;
 
     // URLのパース（バリデーション含む）
@@ -15,6 +17,7 @@ async function webFetchExecute(args: Record<string, unknown>): Promise<string> {
 
     // ガードレール: 許可リストのチェック
     const isAllowed = config.allowedDomains.some(domain =>
+        // 完全一致またはサブドメインだけを許可します。
         targetUrl.hostname === domain || targetUrl.hostname.endsWith(`.${domain}`)
     );
 
@@ -34,6 +37,7 @@ async function webFetchExecute(args: Record<string, unknown>): Promise<string> {
 }
 
 export const webFetch: Tool = {
+    // 外部ネットワークアクセスは影響が大きいため、needsApproval を true にしています。
     name: 'webFetch',
     description: '指定されたURLのWebページを取得します',
     needsApproval: true,

@@ -14,9 +14,12 @@ import type { ProviderConfig } from './openai';
 type ResponsesInput = OpenAI.Responses.ResponseInputItem;
 
 function convertMessagesToInput(messages: Message[]): ResponsesInput[] {
+    // Responses API は Chat Completions と入力形式が違うため、
+    // 共通 Message[] を ResponsesInput[] へ詰め替えます。
     const input: ResponsesInput[] = [];
 
     for (const m of messages) {
+        // for...of は配列の要素を1つずつ取り出します。Python の for m in messages に近い構文です。
         if (m.role === 'system') {
             // システムメッセージは `instructions` パラメータで渡す
             continue;
@@ -64,6 +67,7 @@ function convertMessagesToInput(messages: Message[]): ResponsesInput[] {
 }
 
 function extractSystemMessage(messages: Message[]): string | undefined {
+    // find は条件に合う最初の要素を返します。見つからなければ undefined です。
     const system = messages.find((m) => m.role === 'system');
     return system?.content;
 }
@@ -71,6 +75,7 @@ function extractSystemMessage(messages: Message[]): string | undefined {
 function convertToolsToFunctions(
     tools?: GenerateParams['tools']
 ): OpenAI.Responses.FunctionTool[] | undefined {
+    // tools が undefined または空配列なら、APIには tools 自体を渡しません。
     if (!tools || tools.length === 0) return undefined;
 
     return tools.map((tool) => ({
@@ -107,6 +112,8 @@ function parseJsonArgs(raw: string): Record<string, unknown> {
 function convertResponseToResult(
     response: OpenAI.Responses.Response
 ): GenerateTextResult {
+    // `item is ...` は型ガードです。
+    // response.output の中から message や function_call だけを取り出した後、型付きで扱えるようにします。
     const messageItem = response.output.find(
         (item): item is OpenAI.Responses.ResponseOutputMessage => item.type === 'message'
     );
@@ -200,6 +207,8 @@ export function createOpenAIResponses(config: ProviderConfig = {}): Provider {
         },
 
         async *doStream(params: GenerateParams): AsyncIterable<StreamChunk> {
+            // Responses API のストリームは event.type で種類が分かれます。
+            // 本文デルタ、関数引数デルタ、推論イベント、完了イベントを switch で処理します。
             const input = convertMessagesToInput(params.messages);
             const instructions = extractSystemMessage(params.messages);
             const tools = convertToolsToFunctions(params.tools);

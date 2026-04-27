@@ -3,8 +3,11 @@ import { generateText } from './generate-text';
 import type { GenerateParams, LanguageModel, Message } from '../types';
 import { LLMApiError } from '../types';
 
+// Bun の test runner を使った単体テストです。
+// Python の pytest に近く、describe でグループ化し、it で個別ケースを書きます。
 describe('generateText', () => {
 	    it('passes GenerateParams through to model.doGenerate', async () => {
+	        // 実APIを呼ばず、LanguageModel 形のモックオブジェクトを作ります。
 	        let received: GenerateParams | null = null;
 	        const model: LanguageModel = {
 	            async doGenerate(params) {
@@ -23,6 +26,8 @@ describe('generateText', () => {
 	        });
 
 	        expect(result.text).toBe('ok');
+	        // `!` は non-null assertion です。
+	        // 直前の not.toBeNull で null ではないと確認したため、型チェッカーにもそれを伝えています。
 	        expect(received).not.toBeNull();
 	        expect(received!).toEqual({
 	            messages,
@@ -34,6 +39,7 @@ describe('generateText', () => {
 	    });
 
     it('retries transient LLMApiError failures', async () => {
+        // 429 はレート制限なので、一時エラーとして retry されることを確認します。
         let calls = 0;
         const model: LanguageModel = {
             async doGenerate() {

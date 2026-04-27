@@ -3,6 +3,8 @@ import { LLMApiError } from '../types';
 const MAX_BACKOFF_MS = 60000;
 
 // LLM APIの一時的なエラーに対する指数バックオフ再試行ヘルパー
+// `<T>` はジェネリクスです。fn が string を返すなら Promise<string>、
+// オブジェクトを返すならそのオブジェクト型、というように戻り値の型を保ったまま再試行できます。
 export async function retryWithExponentialBackoff<T>(
   fn: () => Promise<T>,
   maxRetries = 2
@@ -11,8 +13,10 @@ export async function retryWithExponentialBackoff<T>(
 
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
+      // 成功したら即 return します。以後の retry は実行されません。
       return await fn();
     } catch (error) {
+      // LLMApiError 以外は「一時的なAPIエラー」と判断できないため、そのまま投げ直します。
       if (!(error instanceof LLMApiError)) {
         throw error;
       }
@@ -30,6 +34,7 @@ export async function retryWithExponentialBackoff<T>(
       const baseBackoff = Math.min(Math.pow(2, attempt) * 1000, MAX_BACKOFF_MS);
       let waitMs = baseBackoff;
 
+      // HTTPヘッダーは大文字小文字が揺れるため、小文字キーの辞書に変換してから参照します。
       const headerMap = error.headers
         ? Object.fromEntries(
             Object.entries(error.headers).map(([k, v]) => [k.toLowerCase(), v])
@@ -65,6 +70,7 @@ export async function retryWithExponentialBackoff<T>(
         }
       }
 
+      // setTimeout を Promise で包むと、await で指定ミリ秒だけ待てます。
       await new Promise((resolve) => setTimeout(resolve, waitMs));
     }
   }

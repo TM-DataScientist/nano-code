@@ -3,6 +3,8 @@ import * as path from 'path';
 
 const WORKSPACE_ROOT = path.resolve(process.cwd(), './workspace');
 
+// ファイル全体を書き換えるのではなく、oldText と一致する1箇所だけを newText に置換します。
+// LLMが編集範囲を間違えにくいよう、同じ oldText が複数ある場合はエラーにします。
 async function editFileExecute(args: {
     path: string;
     oldText: string;
@@ -16,6 +18,8 @@ async function editFileExecute(args: {
     }
 
     const content = await fs.readFile(absolutePath, 'utf-8');
+    // split の分割数から一致回数を数えています。
+    // 例: "a-b-a".split("a").length - 1 は 2 です。
     const matches = content.split(args.oldText).length - 1;
 
     if (matches === 0) {
@@ -26,6 +30,7 @@ async function editFileExecute(args: {
     }
 
     const backupPath = `${absolutePath}.backup`;
+    // 編集前にバックアップを作り、失敗時に人間が戻せるようにします。
     await fs.copyFile(absolutePath, backupPath);
 
     const newContent = content.replace(args.oldText, args.newText);

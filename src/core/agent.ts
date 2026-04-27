@@ -5,6 +5,8 @@ import { LLMApiError } from '../types';
 import { requestApproval } from './approval';
 
 interface AgentConfig {
+    // interface は「設定オブジェクトが持つべきキー」を定義します。
+    // Pythonでいう設定用TypedDictに近く、constructor に渡す値の形をチェックします。
     name: string;
     model: LanguageModel;
     instructions: string;
@@ -16,6 +18,8 @@ interface AgentConfig {
 }
 
 export class Agent {
+    // private はクラス外から直接触れないフィールドです。
+    // Pythonの慣習的な `_name` より強く、TypeScriptの型チェックでアクセスを禁止します。
     private name: string;
     private model: LanguageModel;
     private instructions: string;
@@ -26,6 +30,8 @@ export class Agent {
     private useStreaming?: boolean;
 
     constructor(config: AgentConfig) {
+        // constructor は Python の __init__ に相当します。
+        // 渡された設定をインスタンスフィールドへ保存し、後続の generate で使います。
         this.name = config.name;
         this.model = config.model;
         this.instructions = config.instructions;
@@ -43,6 +49,8 @@ export class Agent {
         // 簡易的な制限：文字数で判定（例: 30,000文字 ≈ 10k~15kトークン程度と仮定）
         const CHAR_LIMIT = 30000;
 
+        // reduce は配列を1つの値へ畳み込むメソッドです。
+        // ここでは全メッセージの content 文字数を合計しています。
         let totalLength = messages.reduce((sum, m) => sum + (m.content?.length || 0), 0);
 
         // 制限内なら何もしない
@@ -62,6 +70,8 @@ export class Agent {
 
         // 2. 戦略A: 古いツール実行結果を「省略」に置換
         middleMessages = middleMessages.map(msg => {
+            // `...msg` はスプレッド構文で、既存オブジェクトのプロパティをコピーします。
+            // Pythonで dict を `{**msg, "content": ...}` と作り直す感覚に近いです。
             if (msg.role === 'tool' && msg.content && msg.content.length > 200) {
                 return {
                     ...msg,
@@ -87,6 +97,8 @@ export class Agent {
     }
 
     async generate(userPrompt: string): Promise<{
+        // 戻り値のオブジェクト形をその場で型定義しています。
+        // 小さな型なら別名を作らず、このようにインラインで書くことがあります。
         text: string;
         finishReason: 'stop' | 'max_steps' | 'length' | 'content_filter' | 'error';
         usage?: { totalTokens: number };
@@ -110,6 +122,8 @@ export class Agent {
             messages = this.manageContext(messages);
 
             const response = await (async () => {
+                // 即時実行の async 関数です。
+                // ストリーミング有無で分岐しつつ、最終的には同じ response 変数に結果を入れるために使っています。
                 if (this.useStreaming) {
                     if (this.model.doStream) {
                         const streamResult = await collectStreamResult({
@@ -146,6 +160,8 @@ export class Agent {
             }
 
             if (response.toolCalls && response.toolCalls.length > 0) {
+                // LLMがツール呼び出しを要求した場合は、まず assistant の発言として履歴に残します。
+                // 次に各ツールを実行し、その結果を role: 'tool' のメッセージとして追加します。
                 messages.push({
                     role: 'assistant',
                     content: response.text || '',
@@ -153,11 +169,14 @@ export class Agent {
                 });
 
                 for (const toolCall of response.toolCalls) {
+                    // find は条件に合う最初の要素を返します。見つからない場合は undefined です。
                     const tool = this.tools.find(t => t.name === toolCall.name);
                     if (tool) {
                         console.log(`[ツール] ${toolCall.name}(${JSON.stringify(toolCall.args)})`);
 
                         if (tool.needsApproval) {
+                            // needsApproval が true のツールだけ、ユーザー承認を挟みます。
+                            // `await` しているので、回答が返るまで処理はここで待機します。
                             const approved = await this.approvalFunc(toolCall.name, toolCall.args);
                             if (!approved) {
                                 messages.push({
@@ -180,6 +199,8 @@ export class Agent {
                                 name: toolCall.name,
                             });
                         } catch (error: any) {
+                            // catch の error は標準では unknown 扱いですが、この教材では message を読むため any にしています。
+                            // 本番では error instanceof Error で型を確認してから使う書き方がより安全です。
                             const errorMessage = error.message || 'Unknown error';
                             const errorDetails = error instanceof LLMApiError && error.raw
                                 ? `\n詳細: ${JSON.stringify(error.raw, null, 2)}`

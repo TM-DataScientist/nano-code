@@ -19,6 +19,8 @@ async function editFileExecute(args: {
 
     const content = await fs.readFile(absolutePath, 'utf-8');
     // split の分割数から一致回数を数えています。
+    // Python の content.split(old_text) と近く、oldText を区切り文字として文字列を配列に分割します。
+    // oldText が1回出てくると配列は2個、2回出てくると3個になるため、length - 1 が一致回数になります。
     // 例: "a-b-a".split("a").length - 1 は 2 です。
     const matches = content.split(args.oldText).length - 1;
 

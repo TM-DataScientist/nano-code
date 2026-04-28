@@ -2,6 +2,7 @@
 
 ## 2026-04-28
 
+- `src/tools/editFile.ts` の `content.split(args.oldText)` について、Python の `split` と同様に区切り文字で分割し、`length - 1` で一致回数を数えていることを補足しました。
 - `src/tools/readFile.ts` の `readFile` ツール定義について、Python の辞書に関数を値として入れる感覚に近いことを補足しました。
 - `src/tools/readFile.ts` の `execute: readFileExecute` について、ツール実行時に呼ばれる関数を登録していることを補足しました。
 - `src/tools/readFile.ts` の `if (!stat.isFile())` について、通常ファイルではないディレクトリや特殊ファイルを拒否するチェックであることを補足しました。

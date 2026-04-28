@@ -70,5 +70,7 @@ export const readFile = {
         },
         required: ['path'],
     },
+    // execute は「このツールが実行されたときに呼ぶ関数」を指定するプロパティです。
+    // ここでは上で定義した readFileExecute 関数を登録しているため、readFile ツールが呼ばれるとその処理が動きます。
     execute: readFileExecute,
 };

@@ -2,6 +2,7 @@
 
 ## 2026-04-28
 
+- `src/tools/readFile.ts` の `execute: readFileExecute` について、ツール実行時に呼ばれる関数を登録していることを補足しました。
 - `src/tools/readFile.ts` の `if (!stat.isFile())` について、通常ファイルではないディレクトリや特殊ファイルを拒否するチェックであることを補足しました。
 - `src/tools/readFile.ts` の `fs.stat(absolutePath)` について、ファイル本体を読む前に種類やサイズなどのメタ情報を取得する処理であることを補足しました。
 - `src/tools/readFile.ts` のシンボリックリンク検証について、リンクが別ファイルへのショートカットであることと、`fs.realpath` で実パスを確認する理由を補足しました。

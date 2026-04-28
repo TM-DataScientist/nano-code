@@ -18,7 +18,10 @@ async function readFileExecute(args: { path: string }): Promise<string> {
         throw new Error(`アクセス拒否: ${args.path} はワークスペース外です`);
     }
 
-    // シンボリックリンクを解決して実パスを検証
+    // シンボリックリンクとは、別のファイルやディレクトリを指す「ショートカット」のようなファイルです。
+    // たとえば workspace 内にある `secret-link` が、実際には workspace 外の `/etc/passwd` を指している場合があります。
+    // 見かけ上のパスだけを確認すると workspace 内に見えるため、fs.realpath でリンク先の実パスを確認します。
+    // その実パスも workspace 内にある場合だけ読み込みを許可します。
     const realPath = await fs.realpath(absolutePath);
     if (!realPath.startsWith(allowedPrefix) && realPath !== WORKSPACE_ROOT) {
         throw new Error(`アクセス拒否: ${args.path} はシンボリックリンク経由でワークスペース外を参照しています`);

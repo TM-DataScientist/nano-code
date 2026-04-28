@@ -2,6 +2,7 @@
 
 ## 2026-04-28
 
+- `src/tools/readFile.ts` のシンボリックリンク検証について、リンクが別ファイルへのショートカットであることと、`fs.realpath` で実パスを確認する理由を補足しました。
 - `src/tools/readFile.ts` のパストラバーサル防止処理について、`../` によるワークスペース外ファイル参照攻撃の意味と防止理由を補足しました。
 - `chapters/03-multi-provider.ts` の Anthropic・Google セクション（import・モデル変数・API呼び出しブロック）を、APIキー未設定のためコメントアウトしました。OpenAI のみ有効な状態にしています。
 - `src/core/generate-text.ts` の `async 関数なので戻り値は Promise になり` について、`async`・`Promise<T>`・`await` の関係を Python との対比で補足するコメントを追加しました。

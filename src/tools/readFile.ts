@@ -56,6 +56,8 @@ async function readFileExecute(args: { path: string }): Promise<string> {
 export const readFile = {
     // このオブジェクト全体が Tool 定義です。LLMには name/description/parameters が渡り、
     // 実際の実行時には execute 関数が呼ばれます。
+    // Python でいう辞書に `{"execute": read_file_execute}` のように関数を値として入れている感覚に近いです。
+    // TypeScript ではこの `{ ... }` をオブジェクトと呼び、文字列や boolean だけでなく関数もプロパティの値にできます。
     name: 'readFile',
     description:
         'ワークスペース内の指定されたパスのファイル内容を文字列として読み込む。ファイルが存在しない場合はエラーを返す。100KBを超える巨大ファイルは読み込めない（コンテキストウィンドウ保護のため）。相対パスまたは絶対パスを指定できる。',

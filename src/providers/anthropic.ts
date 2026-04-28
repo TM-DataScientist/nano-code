@@ -61,6 +61,11 @@ function mapMessages(messages: NonSystemMessage[]): Anthropic.MessageParam[] {
     // `messages: NonSystemMessage[]` は引数の型、コロンの後ろの `Anthropic.MessageParam[]` は戻り値の型です。
     // つまり「system を除いたメッセージ配列を受け取り、Anthropic SDK が要求する MessageParam の配列を返す」
     // という関数シグネチャです。Pythonで型ヒントを書くなら `def map_messages(messages: list[NonSystemMessage]) -> list[MessageParam]:` に近いです。
+    // 下の `return messages.map((message): Anthropic.MessageParam => { ... })` にも型が出てきますが、
+    // これは外側の mapMessages 関数ではなく、map に渡している「1要素を変換するコールバック関数」の戻り値型です。
+    // コールバックが各 message を MessageParam 1個に変換し、map 全体として MessageParam[] が返ります。
+    // そのため、外側の関数定義には配列の戻り値 `Anthropic.MessageParam[]`、
+    // 内側のコールバックには1要素分の戻り値 `Anthropic.MessageParam` を書いています。
     return messages.map((message): Anthropic.MessageParam => {
         if (message.role === 'assistant') {
             const content: Anthropic.ContentBlockParam[] = [];

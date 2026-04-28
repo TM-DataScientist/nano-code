@@ -6,6 +6,8 @@ const WORKSPACE_ROOT = path.resolve(process.cwd(), './workspace');
 const ALLOWED_COMMANDS = ['bun', 'ls', 'cat', 'grep', 'find', 'pwd', 'mkdir', 'git', 'gh'];
 const MAX_OUTPUT_LENGTH = 2000;
 
+// Quote は「現在どの引用符の中にいるか」を表す型です。
+// `|` は union 型で、Python の Literal['"', "'"] | None に近く、ダブルクォート・シングルクォート・引用符なし(null)だけを許します。
 type Quote = '"' | "'" | null;
 type ExecCommandInput = {
     // unknown は「値は来るが、まだ型が分からない」ことを表します。

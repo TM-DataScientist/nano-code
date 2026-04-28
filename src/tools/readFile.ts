@@ -32,6 +32,8 @@ async function readFileExecute(args: { path: string }): Promise<string> {
         // ここで得た stat を使って、ディレクトリではなく通常ファイルか、100KB以下かを確認します。
         const stat = await fs.stat(absolutePath);
         // ファイル種別チェック
+        // stat.isFile() は対象が「通常ファイル」なら true を返します。
+        // 先頭の `!` は否定なので、ディレクトリや特殊ファイルなど通常ファイルではない場合にエラーにします。
         if (!stat.isFile()) {
             throw new Error(`通常ファイルではありません: ${args.path}`);
         }

@@ -47,6 +47,10 @@ function mapAnthropicFinishReason(
 type NonSystemMessage = Exclude<
     // Exclude<A, B> は union 型 A から B に当てはまる型を取り除くユーティリティ型です。
     // Anthropic API では system を別パラメータで渡すため、通常メッセージから除外しています。
+    // `GenerateParams['messages']` は GenerateParams 型の messages プロパティの型を取り出します。
+    // その後ろの `[number]` は「配列の要素1つ分の型」を取り出す書き方です。
+    // つまり Message[] から Message の union 型を取り出し、そこから `{ role: 'system' }` に合う型を除外します。
+    // 結果として user / assistant / tool のメッセージだけを扱う型になります。
     GenerateParams['messages'][number],
     { role: 'system' }
 >;
@@ -54,6 +58,9 @@ type NonSystemMessage = Exclude<
 function mapMessages(messages: NonSystemMessage[]): Anthropic.MessageParam[] {
     // Nano Code共通の Message 形式を Anthropic Messages API の形式へ変換します。
     // Anthropicでは tool の結果も user role の tool_result として渡す点がOpenAIと違います。
+    // `messages: NonSystemMessage[]` は引数の型、コロンの後ろの `Anthropic.MessageParam[]` は戻り値の型です。
+    // つまり「system を除いたメッセージ配列を受け取り、Anthropic SDK が要求する MessageParam の配列を返す」
+    // という関数シグネチャです。Pythonで型ヒントを書くなら `def map_messages(messages: list[NonSystemMessage]) -> list[MessageParam]:` に近いです。
     return messages.map((message): Anthropic.MessageParam => {
         if (message.role === 'assistant') {
             const content: Anthropic.ContentBlockParam[] = [];

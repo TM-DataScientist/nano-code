@@ -102,6 +102,15 @@ function mapMessages(messages: NonSystemMessage[]): Anthropic.MessageParam[] {
     });
 }
 
+// `export` を付けると、他ファイルから `import { createAnthropic } from './providers/anthropic'` で
+// このファンクションを呼び出せるようになります。付けなければそのファイル内だけのプライベート関数です。
+// `function createAnthropic` は「ファクトリ関数」パターンです。
+// ファクトリ関数とは「何か（ここでは Provider オブジェクト）を作って返す関数」のことで、
+// Python の `def create_anthropic_provider(config={}): ...` に相当します。
+// `config: ProviderConfig = {}` は、引数が省略されたときのデフォルト値を `{}` (空オブジェクト) にしています。
+// Python の `def create_anthropic(config: ProviderConfig = {})` と同じ意味です。
+// `: Provider` は戻り値の型です。この関数は `Provider` 型の値を返すことを宣言しています。
+// 中では Anthropic SDK クライアントを生成し、それを内包した `LanguageModel` を返す関数を組み立てています。
 export function createAnthropic(config: ProviderConfig = {}): Provider {
     const apiKey = config.apiKey ?? process.env.ANTHROPIC_API_KEY;
     const baseURL = (config.baseURL ?? 'https://api.anthropic.com').replace(

@@ -22,6 +22,12 @@ export type ProviderConfig = {
     maxRetries?: number;
 };
 
+// Anthropic API が返す stop_reason を、Nano Code 全体で使う共通の finishReason に変換します。
+// Pythonでいう「外部APIの値を、アプリ内部のenum風の値へ変換する関数」です。
+// - end_turn / stop_sequence: モデルが自然に応答を終えたので 'stop'
+// - max_tokens: 出力上限に達して途中で止まった可能性があるので 'length'
+// - tool_use: モデルがツール実行を要求しているので 'tool_calls'
+// - それ以外: 未知の値でも処理を止めず、通常終了の 'stop' として扱います。
 function mapAnthropicFinishReason(
     stopReason: string | null | undefined
 ): GenerateTextResult['finishReason'] {

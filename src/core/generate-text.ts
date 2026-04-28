@@ -9,7 +9,20 @@ export type GenerateTextParams = GenerateParams & {
 };
 
 // generateText は、どのLLMプロバイダーでも同じ形でテキスト生成を呼べるようにする薄いラッパーです。
-// async 関数なので戻り値は Promise になり、呼び出し側では `await generateText(...)` と書きます。
+//
+// 【async と Promise の関係】
+// `async` を付けた関数は「非同期関数」になります。非同期関数は処理を完了する前に一旦制御を返し、
+// 処理が終わったら結果を届けます。その「いつか届く結果の入れ物」が `Promise` です。
+// つまり `async function foo(): Promise<X>` は「Xを非同期で返す関数」という意味です。
+//
+// Python で例えると `async def generate_text(...) -> GenerateTextResult:` に近いですが、
+// Python では戻り値型に `Coroutine` や `Awaitable` と書く必要はありません。
+// TypeScript では明示的に `Promise<GenerateTextResult>` と書くルールになっています。
+//
+// 呼び出し側では `const result = await generateText(params)` と書くことで、
+// Promise が解決されるまで待ち、解決後の値 `GenerateTextResult` を `result` に取り出せます。
+// `await` を書かずに呼ぶと、result は `Promise<GenerateTextResult>` オブジェクトそのものになり
+// テキストではなく「約束オブジェクト」が返ってきてしまうので注意が必要です。
 export async function generateText(
     params: GenerateTextParams
 ): Promise<GenerateTextResult> {

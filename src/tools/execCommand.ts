@@ -28,6 +28,9 @@ export function parseCommand(input: string): string[] {
     let escaped = false;
 
     for (let i = 0; i < input.length; i++) {
+        // noUncheckedIndexedAccess が有効なため input[i] の型は string | undefined になります。
+        // ループ条件 i < input.length により実行時に undefined になることはなく、as string で型エラーを抑制します。
+        // 実行時の ch は Python の s[i] と同様、必ず長さ 1 の文字列（1 UTF-16 コードユニット）です。
         const ch = input[i] as string;
 
         if (quote) {
@@ -37,6 +40,10 @@ export function parseCommand(input: string): string[] {
                 continue;
             }
 
+            // '\\' は TypeScript/JavaScript でバックスラッシュ 1 文字を表すエスケープシーケンスです。
+            // Python の '\\' と同じく '\\'.length === 1 なので、ch（1 文字）がバックスラッシュのとき真になります。
+            // この条件は「ダブルクォート内でバックスラッシュが来た → 次の文字をエスケープ」という意味です。
+            // 例: echo "test\"end" をパース中、" の直前の \ でこの条件が真になります。
             if (ch === '\\' && quote === '"') {
                 escaped = true;
                 continue;

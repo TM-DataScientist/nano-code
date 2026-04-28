@@ -2,6 +2,9 @@
 
 ## 2026-04-28
 
+- `src/tools/execCommand.ts` の `const ch = input[i] as string;` について、`noUncheckedIndexedAccess: true` により型が `string | undefined` になるためループ条件で安全を保証した上で `as string` で抑制していること、実行時には Python の `s[i]` 同様に長さ 1 の文字列であることを補足しました。
+- `src/tools/execCommand.ts` の `if (ch === '\\' && quote === '"')` について、`'\\'` が TypeScript/JavaScript ではバックスラッシュ 1 文字を表すエスケープシーケンス（Python と同じ）であり、この条件が「ダブルクォート内のバックスラッシュ」を検出するため偽にはならないことを補足しました。
+
 - `src/tools/execCommand.ts` の `tokens.push(current)` について、現在の引数を配列末尾へ追加する処理であり Python の `list.append(...)` に近いことを補足しました。
 - `src/tools/execCommand.ts` の `let escaped = false` について、値を入れ替えられる `let` 変数であり、直前のバックスラッシュを覚える boolean フラグであることを補足しました。
 - `src/tools/execCommand.ts` の `type Quote = '"' | "'" | null` について、引用符解析用の union 型であり Python の `Literal[...] | None` に近いことを補足しました。

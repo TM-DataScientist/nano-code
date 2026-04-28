@@ -1,6 +1,6 @@
 import { generateText } from '../src/core/generate-text';
-import { createAnthropic } from '../src/providers/anthropic';
-import { createGoogle } from '../src/providers/google';
+// import { createAnthropic } from '../src/providers/anthropic'; // APIキー未設定のためコメントアウト
+// import { createGoogle } from '../src/providers/google';       // APIキー未設定のためコメントアウト
 import { createOpenAI } from '../src/providers/openai';
 import type { Message } from '../src/types';
 
@@ -20,8 +20,8 @@ async function main() {
     // ?? は「左側が null または undefined のときだけ右側を使う」演算子です。
     // つまり環境変数が設定されていればそれを使い、なければデフォルトのモデル名を使います。
     const openaiModel = process.env.OPENAI_MODEL_ID ?? 'gpt-5-mini';
-    const anthropicModel = process.env.ANTHROPIC_MODEL_ID ?? 'claude-haiku-4-5-20251001'
-    const googleModel = process.env.GOOGLE_MODEL_ID ?? 'gemini-2.5-flash';
+    // const anthropicModel = process.env.ANTHROPIC_MODEL_ID ?? 'claude-haiku-4-5-20251001'; // APIキー未設定のためコメントアウト
+    // const googleModel = process.env.GOOGLE_MODEL_ID ?? 'gemini-2.5-flash';                // APIキー未設定のためコメントアウト
 
     console.log('--- OpenAI ---');
     // createOpenAI() は OpenAI 用のモデル作成関数を返します。
@@ -38,27 +38,27 @@ async function main() {
         console.error('[OpenAI] error:', error);
     }
 
-    console.log('\n--- Anthropic ---');
+    // console.log('\n--- Anthropic ---');
     // Anthropic も OpenAI と同じ generateText の形で呼び出せるように、
     // createAnthropic() がプロバイダー差分を吸収しています。
-    const anthropic = createAnthropic();
-    try {
-        const res2 = await generateText({ model: anthropic(anthropicModel), messages });
-        console.log('Result:', res2.text);
-    } catch (error) {
-        console.error('[Anthropic] error:', error);
-    }
+    // const anthropic = createAnthropic();
+    // try {
+    //     const res2 = await generateText({ model: anthropic(anthropicModel), messages });
+    //     console.log('Result:', res2.text);
+    // } catch (error) {
+    //     console.error('[Anthropic] error:', error);
+    // }
 
-    console.log('\n--- Google ---');
+    // console.log('\n--- Google ---');
     // Google も同じ messages を使って呼び出します。
     // 呼び出し側のコードを共通化できるのが Provider 抽象の目的です。
-    const google = createGoogle();
-    try {
-        const res3 = await generateText({ model: google(googleModel), messages });
-        console.log('Result:', res3.text);
-    } catch (error) {
-        console.error('[Google] error:', error);
-    }
+    // const google = createGoogle();
+    // try {
+    //     const res3 = await generateText({ model: google(googleModel), messages });
+    //     console.log('Result:', res3.text);
+    // } catch (error) {
+    //     console.error('[Google] error:', error);
+    // }
 }
 
 // main() を実行します。

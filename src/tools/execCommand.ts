@@ -70,6 +70,8 @@ export function parseCommand(input: string): string[] {
 
         if (/\s/.test(ch)) {
             if (current.length > 0) {
+                // tokens.push(current) は、いま作っている1つの引数 current を tokens 配列の末尾に追加します。
+                // Python でいう tokens.append(current) に近い処理です。
                 tokens.push(current);
                 current = '';
             }

@@ -2,6 +2,7 @@
 
 ## 2026-04-28
 
+- `src/tools/execCommand.ts` の `tokens.push(current)` について、現在の引数を配列末尾へ追加する処理であり Python の `list.append(...)` に近いことを補足しました。
 - `src/tools/execCommand.ts` の `let escaped = false` について、値を入れ替えられる `let` 変数であり、直前のバックスラッシュを覚える boolean フラグであることを補足しました。
 - `src/tools/execCommand.ts` の `type Quote = '"' | "'" | null` について、引用符解析用の union 型であり Python の `Literal[...] | None` に近いことを補足しました。
 - `src/tools/editFile.ts` の `content.split(args.oldText)` について、Python の `split` と同様に区切り文字で分割し、`length - 1` で一致回数を数えていることを補足しました。

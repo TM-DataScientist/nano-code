@@ -28,6 +28,8 @@ async function readFileExecute(args: { path: string }): Promise<string> {
     }
 
     try {
+        // fs.stat はファイル本体を読む前に、種類やサイズなどのメタ情報を取得します。
+        // ここで得た stat を使って、ディレクトリではなく通常ファイルか、100KB以下かを確認します。
         const stat = await fs.stat(absolutePath);
         // ファイル種別チェック
         if (!stat.isFile()) {

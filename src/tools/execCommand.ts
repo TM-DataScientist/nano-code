@@ -23,6 +23,8 @@ export function parseCommand(input: string): string[] {
     const tokens: string[] = [];
     let current = '';
     let quote: Quote = null;
+    // let はあとから値を入れ替えられる変数宣言です。
+    // escaped は「直前にバックスラッシュを読んだので、次の文字を特別扱いする」状態を覚える boolean フラグです。
     let escaped = false;
 
     for (let i = 0; i < input.length; i++) {

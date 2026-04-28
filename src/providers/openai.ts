@@ -84,6 +84,8 @@ function mapMessages(messages: GenerateParams['messages']) {
 export function createOpenAI(config: ProviderConfig = {}): Provider {
     // `??` は null または undefined のときだけ右側を使う演算子です。
     // 空文字はそのまま空文字として扱われる点が `||` と違います。
+    // Python風に書くなら `config.apiKey if config.apiKey is not None else os.environ.get(...)` に近いですが、
+    // TypeScript/JavaScript では undefined も「未指定」として右側へフォールバックします。
     const apiKey = config.apiKey ?? process.env.OPENAI_API_KEY;
     const baseURL = config.baseURL ?? 'https://api.openai.com/v1';
 

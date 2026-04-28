@@ -9,9 +9,16 @@ import type {
 import { LLMApiError } from '../types';
 import Anthropic from '@anthropic-ai/sdk';
 
+// Anthropicプロバイダーを作るときに渡せる設定オブジェクトの型です。
+// Pythonで例えると、`{"apiKey": "...", "baseURL": "...", "maxRetries": 2}` のような
+// 辞書に入れてよいキーと値の型を、事前に宣言しているものです。
+// `export type` なので、この型は他ファイルから import して再利用できます。
 export type ProviderConfig = {
+    // `?` は省略可能という意味です。指定されなければ createAnthropic 側で環境変数や既定値を使います。
     apiKey?: string;
+    // Anthropic互換APIやプロキシを使う場合に、接続先URLを差し替えるための任意設定です。
     baseURL?: string;
+    // SDK内部の自動リトライ回数です。未指定の場合、このファイルでは 0 を使います。
     maxRetries?: number;
 };
 

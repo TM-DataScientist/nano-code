@@ -9,7 +9,10 @@ const MAX_FILE_SIZE = 100 * 1024; // 100KB
 async function readFileExecute(args: { path: string }): Promise<string> {
     const absolutePath = path.resolve(WORKSPACE_ROOT, args.path);
 
-    // path.resolve 後に prefix を確認し、`../` で workspace 外へ出るパストラバーサルを防ぎます。
+    // パストラバーサルとは、`../` などを使って本来許可されたディレクトリの外へ移動し、
+    // `.env` やシステム設定ファイルのような読んではいけないファイルへアクセスしようとする攻撃です。
+    // 例: `../../.env` のような入力をそのまま読むと、workspace 外の機密ファイルに届く可能性があります。
+    // そのため path.resolve 後に prefix を確認し、workspace 外へ出るパストラバーサルを防ぎます。
     const allowedPrefix = WORKSPACE_ROOT + path.sep;
     if (!absolutePath.startsWith(allowedPrefix) && absolutePath !== WORKSPACE_ROOT) {
         throw new Error(`アクセス拒否: ${args.path} はワークスペース外です`);

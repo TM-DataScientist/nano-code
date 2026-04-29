@@ -200,6 +200,10 @@ ${issueText}
         if (error instanceof Error) {
             let message = error.message;
             if (apiKey) {
+                // エラーメッセージ内に本物のAPIキーが含まれていた場合、ログへそのまま出さないように置換します。
+                // new RegExp(apiKey, 'g') は apiKey と同じ文字列を探す正規表現で、'g' は一致箇所をすべて置換する指定です。
+                // message.replace(...) は元の文字列を直接変更せず、置換後の新しい文字列を返します。
+                // Pythonなら re.sub(re.escape(api_key), mask_secret(api_key), message) に近い処理です。
                 message = message.replace(new RegExp(apiKey, 'g'), maskSecret(apiKey));
             }
             console.error(`原因: ${message}`);

@@ -176,6 +176,8 @@ ${issueText}
         // approvalFunc は、Agent がツール実行前に「実行してよいか」を確認するときに呼ばれる関数です。
         // yoloMode ? ... : undefined は三項演算子で、--yolo が有効なら自動承認関数を渡し、無効なら何も渡しません。
         // async (name) => { ... } は非同期のアロー関数で、name には実行予定のツール名が入ります。
+        // name はこの場で代入している変数ではなく、Agent 側が approvalFunc を呼ぶときに渡す値を受け取る仮引数です。
+        // たとえば Agent が approvalFunc('readFile') のように呼ぶと、この関数内では name が 'readFile' になります。
         // return true により常に承認するため、Pythonなら async def approval_func(name): return True に近い動きです。
         approvalFunc: yoloMode ? async (name) => {
             console.log(`[自動承認] ツール ${name} の実行を承認しました`);

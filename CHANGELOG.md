@@ -2,6 +2,7 @@
 
 ## 2026-04-29
 
+- `src/tools/index.ts` の `export { X } from './X'` と `import { X } from './X'` について、再エクスポート（外部公開）と内部利用のインポートの違い、Python の `__init__.py` / `from .X import X` との対応、`index.ts` が窓口として個別パスを隠す役割を補足しました。
 - `src/tools/execCommand.ts` の `child.on('close', (code: number | null) => {...})` について、プロセス終了時に発火する `'close'` イベント、`number | null` 型の終了コード（0=正常/null=シグナル終了）、`resolve`/`reject` が Python の `return`/`raise` に対応すること、`===`・テンプレートリテラル・三項演算子の意味を補足しました。
 - `src/tools/execCommand.ts` の `child.stdout.on('data', (data: Buffer) => {...})` について、イベント駆動でチャンク単位に届く標準出力を受け取る仕組み、`Buffer` が Python の `bytes` に対応し `.toString()` が `.decode()` に相当すること、`MAX_OUTPUT_LENGTH` で出力を打ち切るフラグ処理を補足しました。
 - `src/tools/execCommand.ts` の `spawn(commandName, commandArgs, { cwd, timeout, shell })` について、Python の `subprocess.Popen` に対応すること、各オプション（`cwd`/`timeout`/`shell: false`）の意味と `shell: false` がシェルインジェクション防止に重要である理由を補足しました。

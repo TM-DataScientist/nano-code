@@ -1,10 +1,18 @@
 // tools ディレクトリの公開窓口です。
 // 他のファイルは `src/tools/index.ts` からまとめて import できます。
+// Python の __init__.py に対応し、利用者が個別ファイルのパスを知らなくても済みます。
+
+// export { X } from './X' は「取り込んで外に公開する」再エクスポートです。
+// 外部ファイルが `import { readFile } from './tools'` のように使えるようになります。
+// Python での `from .readFile import readFile`（__init__.py 内）に近い書き方です。
 export { readFile } from './readFile';
 export { writeFile } from './writeFile';
 export { editFile } from './editFile';
 export { execCommand } from './execCommand';
 
+// import { X } from './X' は「このファイル内で使うために取り込む」宣言です（Python の from .X import X と同じ）。
+// export だけでは「外に公開」するだけで、このファイル自身の中では使えないため、
+// 15行目の allTools 配列に入れるために別途 import が必要です。
 import { readFile } from './readFile';
 import { writeFile } from './writeFile';
 import { editFile } from './editFile';

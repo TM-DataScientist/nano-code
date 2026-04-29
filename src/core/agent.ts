@@ -94,11 +94,15 @@ export class Agent {
         // content?.length は content がある時だけ長さを読み、無い場合は undefined になるので、|| 0 で0文字扱いにします。
         // つまり systemMessage.content があればその文字数、なければ0を使うという意味です。
         // Pythonなら len(system_message["content"]) if system_message.get("content") else 0 に近いです。
+        // reduce は配列を1つの値へ畳み込む処理です。ここでは中間履歴のcontent文字数を合計しています。
+        // Pythonなら sum(len(m.get("content", "")) for m in middle_messages) に近いです。
         totalLength = (systemMessage.content?.length || 0) +
                       middleMessages.reduce((sum, m) => sum + (m.content?.length || 0), 0) +
                       recentMessages.reduce((sum, m) => sum + (m.content?.length || 0), 0);
 
         while (totalLength > CHAR_LIMIT && middleMessages.length > 0) {
+            // shift() は配列の先頭要素を取り出し、同時に配列から削除します。
+            // Pythonなら middle_messages.pop(0) に近く、ここでは中間履歴の古いメッセージから捨てています。
             const removed = middleMessages.shift();
             if (removed) {
                 totalLength -= (removed.content?.length || 0);

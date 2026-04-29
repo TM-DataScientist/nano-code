@@ -2,6 +2,8 @@
 
 ## 2026-04-29
 
+- `src/core/agent.ts` の `middleMessages.reduce((sum, m) => sum + (m.content?.length || 0), 0)` について、配列を1つの合計値へ畳み込む処理であり、Python の `sum(...)` に近いことを補足しました。
+- `src/core/agent.ts` の `const removed = middleMessages.shift();` について、配列先頭の要素を取り出しつつ削除する処理であり、Python の `pop(0)` に近く、中間履歴の古いメッセージから捨てる意図であることを補足しました。
 - `src/core/agent.ts` の `(systemMessage.content?.length || 0)` について、`content` があれば文字数を使い、なければ0を使うフォールバックであり、Python の `len(...) if ... else 0` に近いことを補足しました。
 - `src/core/agent.ts` の `totalLength = ...` 再計算処理について、長いtool結果を省略した後に system / middle / recent の3ブロックの文字数を足し直すこと、`content?.length || 0` が content 未定義時に0文字扱いすることを補足しました。
 - `src/core/agent.ts` の `middleMessages = middleMessages.map(msg => { ... })` について、配列の各要素を処理して新しい配列を作る `map` と、Python の小さな関数や `lambda` に近いアロー関数の意味を補足しました。

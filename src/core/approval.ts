@@ -8,7 +8,11 @@ export async function requestApproval(
 ): Promise<boolean> {
     // readline の question はコールバック方式のAPIです。
     // ここでは new Promise で包み、async/await で扱いやすい形に変換しています。
+    // Pythonでいうと「コールバックで後から返る処理」を await できる Future のような箱に入れるイメージです。
+    // resolve は、その箱に最終結果を入れて待っている側へ返すための関数です。
     return new Promise((resolve) => {
+        // readline.createInterface は、標準入力(stdin)から1行読み取り、
+        // 標準出力(stdout)へ質問文を表示するための対話用インターフェースを作ります。
         const rl = readline.createInterface({
             input: process.stdin,
             output: process.stdout

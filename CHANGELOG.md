@@ -2,6 +2,7 @@
 
 ## 2026-04-29
 
+- `src/core/approval.ts` の `new Promise((resolve) => { ... })` と `readline.createInterface({ input: process.stdin, output: process.stdout })` について、コールバックAPIを `await` しやすい Promise に包む考え方と、標準入力・標準出力を使ったCLI対話の作り方をPython経験者向けに補足しました。
 - `chapters/04-tools-demo.ts` を `bun run chapters/04-tools-demo.ts` で実行し、`writeFile` / `readFile` / `execCommand` の基本動作と、パストラバーサル・コマンドインジェクション拒否の安全性チェックが成功することを確認しました。
 - `src/tools/index.ts` の `import` と `export` の順番を慣習に合わせて `import` 先・`export` 後に並び替えました（動作は変わりません）。
 - `src/tools/index.ts` の `export { X } from './X'` と `import { X } from './X'` について、再エクスポート（外部公開）と内部利用のインポートの違い、Python の `__init__.py` / `from .X import X` との対応、`index.ts` が窓口として個別パスを隠す役割を補足しました。

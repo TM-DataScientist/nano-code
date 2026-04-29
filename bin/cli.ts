@@ -16,6 +16,9 @@ function maskSecret(value: string | undefined): string {
     return value.slice(0, 4) + '***' + value.slice(-4);
 }
 
+// process.cwd() は CLI を起動した現在のディレクトリを返します。
+// join(..., 'workspace') で、その直下にある workspace ディレクトリのパスをOSに合わせて組み立てます。
+// Pythonなら Path.cwd() / "workspace" に近い処理です。
 const WORKSPACE_ROOT = join(process.cwd(), 'workspace');
 
 async function main() {

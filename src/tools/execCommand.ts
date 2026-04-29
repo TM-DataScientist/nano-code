@@ -108,6 +108,9 @@ async function execCommandExecute(args: Record<string, unknown>): Promise<string
     let commandArgs: string[] = [];
     let commandForCheck = '';
 
+    // input.command は input オブジェクトの command プロパティを読む書き方です。
+    // Python の辞書なら input["command"]、属性を持つオブジェクトなら input.command に近い参照です。
+    // ここでは typeof で文字列か確認してから、コマンド文字列として扱います。
     if (typeof input.command === 'string') {
         const command = input.command;
         // ; や $ など、シェルで別コマンド実行につながる文字を拒否します。

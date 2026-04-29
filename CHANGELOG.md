@@ -2,6 +2,7 @@
 
 ## 2026-04-29
 
+- `src/tools/execCommand.ts` の `input.command` について、オブジェクトの `command` プロパティ参照であり Python の `input["command"]` や属性アクセスに近いことを補足しました。
 - `src/tools/execCommand.ts` の `dangerousChars.test(command)` について、正規表現に一致する危険文字が含まれるかを返す判定であり Python の `re.search(...) is not None` に近いことを補足しました。
 - `src/tools/execCommand.ts` の `const input = args as ExecCommandInput` について、`as` が実行時変換ではなく TypeScript への型アサーションであることを補足しました。
 

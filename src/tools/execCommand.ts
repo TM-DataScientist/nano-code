@@ -121,7 +121,15 @@ async function execCommandExecute(args: Record<string, unknown>): Promise<string
             throw new Error('セキュリティ上の理由により、シェルメタ文字を含むコマンドは実行できません');
         }
 
+        // parseCommand(command) は、例: 'git status --short' を ['git', 'status', '--short'] に分解します。
+        // parts[0] が実行するコマンド名、parts.slice(1) がそれ以降の引数配列です。
+        // Python なら command.split() の結果から parts[0] と parts[1:] を取り出す感覚に近いですが、
+        // この parseCommand は引用符付き引数も扱えるようにしています。
         const parts = parseCommand(command);
+        // parts[0] は配列の先頭要素です。noUncheckedIndexedAccess により型は string | undefined になります。
+        // || '' は「parts[0] が undefined（空配列）または ''（空文字）なら '' を使う」フォールバックです。
+        // Python の `parts[0] if parts else ''` に対応します。
+        // この後 `if (!commandName)` で空チェックをするため、undefined ではなく '' にしておく必要があります。
         commandName = parts[0] || '';
         commandArgs = parts.slice(1);
         commandForCheck = command;

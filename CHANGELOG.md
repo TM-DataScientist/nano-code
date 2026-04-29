@@ -2,6 +2,7 @@
 
 ## 2026-04-29
 
+- `bin/cli.ts` の `approvalFunc: yoloMode ? async (name) => { ... } : undefined` について、`--yolo` 有効時だけツール実行を常に承認する非同期関数を Agent に渡し、無効時は `undefined` にする三項演算子の処理であることを補足しました。
 - `bin/cli.ts` の `issueDrivenInstructions` について、バッククォートで囲まれた `## CI向け追加指示` 以下はコメントではなくテンプレートリテラルの複数行文字列であり、Issue駆動モード用の追加指示として Agent に渡されることを補足しました。
 - `bin/cli.ts` の `isIssueDriven` 判定について、CLI引数の有無と `ISSUE_BODY` / `ISSUE_TEXT` の有無による `true` / `false` の判定表をコメントに追記しました。
 - `bin/cli.ts` の `mkdirSync(WORKSPACE_ROOT, { recursive: true });` について、ワークスペースディレクトリを同期的に作成する処理であり、`recursive: true` により親ディレクトリもまとめて作成できること、Python の `Path(...).mkdir(parents=True, exist_ok=True)` に近いことを補足しました。

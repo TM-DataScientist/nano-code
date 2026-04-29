@@ -2,6 +2,7 @@
 
 ## 2026-04-29
 
+- `src/tools/execCommand.ts` の `Array.isArray(input.commandArgs)` について、Python の `isinstance(x, list)` に対応する組み込み関数であること、`unknown` 型の値を配列メソッドで扱う前に必要な型ガードであること、省略時は `undefined` になりこの if をスキップして `commandArgs` が `[]` のまま使われることを補足しました。
 - `src/tools/execCommand.ts` の `commandName = parts[0] || ''` について、`noUncheckedIndexedAccess` で `parts[0]` が `string | undefined` になるため `|| ''` で空配列時のフォールバックを行っていること、Python の `parts[0] if parts else ''` に対応することを補足しました。
 - `src/tools/execCommand.ts` の `input.command` について、オブジェクトの `command` プロパティ参照であり Python の `input["command"]` や属性アクセスに近いことを補足しました。
 - `src/tools/execCommand.ts` の `dangerousChars.test(command)` について、正規表現に一致する危険文字が含まれるかを返す判定であり Python の `re.search(...) is not None` に近いことを補足しました。

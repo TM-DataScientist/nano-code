@@ -139,6 +139,11 @@ async function execCommandExecute(args: Record<string, unknown>): Promise<string
     // { commandName: "git", commandArgs: ["status"] } のように分割して渡された場合のルートです。
     } else if (typeof input.commandName === 'string') {
         commandName = input.commandName;
+        // Array.isArray(x) は x が配列かを true/false で返す組み込み関数です。
+        // Python の isinstance(x, list) に対応します。
+        // input.commandArgs の型は unknown なので、配列メソッドを使う前にこのチェックが必須です。
+        // この if が true の場合、ブロック内で TypeScript は input.commandArgs を unknown[] と認識します（型ガード）。
+        // commandArgs は省略可能なため undefined のこともあり、その場合はこの if をスキップし commandArgs は [] のままです。
         if (Array.isArray(input.commandArgs)) {
             if (!input.commandArgs.every((arg) => typeof arg === 'string')) {
                 throw new Error('commandArgs は文字列配列で指定してください');

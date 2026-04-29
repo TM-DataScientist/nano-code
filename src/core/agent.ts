@@ -67,7 +67,11 @@ export class Agent {
         if (!systemMessage) {
             return messages;
         }
+        // slice(-4) は「配列の末尾から4件」を取り出します。Pythonなら messages[-4:] に近い書き方です。
+        // 直近の会話ほど次の返答に強く影響するため、圧縮や削除の対象にせず残しています。
         const recentMessages = messages.slice(-4);
+        // slice(1, -4) は「先頭のsystemMessageを除き、末尾4件の直近メッセージも除いた中間部分」を取り出します。
+        // Pythonなら messages[1:-4] に近く、この中間部分だけを圧縮・削除の候補にします。
         let middleMessages = messages.slice(1, -4);
 
         // 2. 戦略A: 古いツール実行結果を「省略」に置換

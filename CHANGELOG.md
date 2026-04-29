@@ -2,6 +2,8 @@
 
 ## 2026-04-29
 
+- `src/core/agent.ts` の `messages.slice(1, -4)` について、先頭の system メッセージと末尾4件の直近メッセージを除いた中間履歴を取り出し、その部分だけを圧縮・削除候補にする処理であることを補足しました。
+- `src/core/agent.ts` の `messages.slice(-4)` について、配列末尾4件を取り出す書き方であり、Python の `messages[-4:]` に近いことと、直近の会話を圧縮・削除対象から外すために4件を残していることを補足しました。
 - `src/core/agent.ts` の `constructor(config: AgentConfig)` について、new Agent(config) 直後に自動実行される初期化用メソッドであり、Python の `__init__` と同じように this.xxx へインスタンス専用の状態を保存する役割であることを補足しました。
 - `src/core/approval.ts` の `new Promise((resolve) => { ... })` と `readline.createInterface({ input: process.stdin, output: process.stdout })` について、コールバックAPIを `await` しやすい Promise に包む考え方と、標準入力・標準出力を使ったCLI対話の作り方をPython経験者向けに補足しました。
 - `chapters/04-tools-demo.ts` を `bun run chapters/04-tools-demo.ts` で実行し、`writeFile` / `readFile` / `execCommand` の基本動作と、パストラバーサル・コマンドインジェクション拒否の安全性チェックが成功することを確認しました。

@@ -62,6 +62,11 @@ async function main() {
     // process.env.ISSUE_BODY || process.env.ISSUE_TEXT は、どちらか片方でも値があればその文字列を返します。
     // 先頭の !! は文字列や undefined を true / false に変換する書き方で、Python の bool(...) に近いです。
     // つまりこの行は「CLI引数がなく、Issue由来の本文が環境変数にあるなら Issue駆動モード」と判定します。
+    // 判定表:
+    // - userPrompt がある: 環境変数があっても false（CLI引数を優先）
+    // - userPrompt がない + ISSUE_BODY または ISSUE_TEXT がある: true
+    // - userPrompt がない + どちらの環境変数もない: false
+    // Pythonなら bool(os.environ.get("ISSUE_BODY") or os.environ.get("ISSUE_TEXT")) と組み合わせる感覚です。
     const isIssueDriven = !userPrompt && !!(process.env.ISSUE_BODY || process.env.ISSUE_TEXT);
 
     if (!userPrompt) {

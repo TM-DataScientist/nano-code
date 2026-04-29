@@ -19,6 +19,9 @@ export function loadInstructions(workspaceRoot: string): string {
   // path.resolve は絶対パスへ正規化します。
   // prompt.md はこの TypeScript ファイルと同じ core ディレクトリに置かれている前提です。
   const basePath = path.resolve(path.join(__dirname, 'prompt.md'));
+  // fs.readFileSync は指定したファイルを同期的に読み込みます。
+  // 'utf-8' を指定しているため、Buffer ではなく文字列として base に入ります。
+  // Python なら open(basePath, encoding='utf-8').read() に近い処理です。
   const base = fs.readFileSync(basePath, 'utf-8');
 
   // workspaceRoot はエージェントが作業するプロジェクトのルートです。

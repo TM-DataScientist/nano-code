@@ -2,6 +2,7 @@
 
 ## 2026-04-29
 
+- `src/core/prompt.ts` の `const base = fs.readFileSync(basePath, 'utf-8');` について、`prompt.md` を同期的に読み込み、`'utf-8'` 指定により文字列として取得する処理であることを Python の `open(...).read()` と対応づけて補足しました。
 - `src/core/prompt.ts` の `import.meta.url` について、今実行しているモジュールファイルの場所を URL 形式で表す値であることをコメントに追記しました。
 - `src/core/prompt.ts` の `const __filename = fileURLToPath(import.meta.url);` について、ES Modules では `__filename` が標準で存在しないため、`import.meta.url` の `file:///...` URL を OS が扱える通常のファイルパスへ変換していることを補足しました。
 - 添付画像の内容をもとに、`workspace/AGENTS.md` を作成し、プロジェクト概要・テスト・コーディング規約・編集方針をMarkdownで記載しました。

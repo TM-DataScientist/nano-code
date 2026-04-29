@@ -238,6 +238,9 @@ async function execCommandExecute(args: Record<string, unknown>): Promise<string
             }
         });
 
+        // 'close' イベントはプロセスが終了したときに発火します（Python の child.wait() に対応）。
+        // code は終了コードで、0=正常終了、1以上=異常終了、null=シグナル強制終了（Python の returncode に対応）。
+        // number | null は「数値 または null」を意味する union 型です。
         child.on('close', (code: number | null) => {
             if (stdoutTruncated) {
                 stdout = stdout.slice(0, MAX_OUTPUT_LENGTH) + '\n... (出力が長いため省略されました)';
@@ -248,8 +251,12 @@ async function execCommandExecute(args: Record<string, unknown>): Promise<string
 
             if (code === 0) {
                 // stderrは必ずしもエラーではない（gitはブランチ切替等をstderrに出力する）
+                // === は型と値の両方が一致するときだけ true になる厳密等値演算子です（Python の == に近い）。
+                // `${...}` はテンプレートリテラルで Python の f'...' に対応。stderr ? A : '' は if stderr else '' に対応。
+                // resolve(...) は Promise を成功で完了させます（Python の return に相当）。
                 resolve(stdout + (stderr ? `\n(stderr: ${stderr.trim()})` : ''));
             } else {
+                // reject(...) は Promise を失敗で完了させます（Python の raise に相当）。
                 reject(new Error(`コマンドが異常終了しました (exit code: ${code})\n${stderr}`));
             }
         });

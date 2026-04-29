@@ -6,6 +6,9 @@ import type { LanguageModel } from '../types';
 
 // 環境変数から利用するプロバイダーとモデルを選び、共通の LanguageModel を作る関数です。
 // Pythonでいう factory function で、呼び出し側は OpenAI / Anthropic / Google の違いを意識せず使えます。
+// export は他ファイルから import できるようにする指定です。
+// options? は省略可能な引数で、{ useResponses?: boolean } は useResponses も省略可能なboolean設定です。
+// : LanguageModel は戻り値の型で、この関数が共通インターフェースのモデルを返すことを表します。
 export function createModelFromEnv(options?: { useResponses?: boolean }): LanguageModel {
     const provider = process.env.LLM_PROVIDER;
     const modelName = process.env.LLM_MODEL;

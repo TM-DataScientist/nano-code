@@ -2,6 +2,7 @@
 
 ## 2026-04-29
 
+- `bin/cli.ts` の `issueDrivenInstructions` について、バッククォートで囲まれた `## CI向け追加指示` 以下はコメントではなくテンプレートリテラルの複数行文字列であり、Issue駆動モード用の追加指示として Agent に渡されることを補足しました。
 - `bin/cli.ts` の `isIssueDriven` 判定について、CLI引数の有無と `ISSUE_BODY` / `ISSUE_TEXT` の有無による `true` / `false` の判定表をコメントに追記しました。
 - `bin/cli.ts` の `mkdirSync(WORKSPACE_ROOT, { recursive: true });` について、ワークスペースディレクトリを同期的に作成する処理であり、`recursive: true` により親ディレクトリもまとめて作成できること、Python の `Path(...).mkdir(parents=True, exist_ok=True)` に近いことを補足しました。
 - `bin/cli.ts` の `const isIssueDriven = !userPrompt && !!(process.env.ISSUE_BODY || process.env.ISSUE_TEXT);` について、CLI引数がなく、`ISSUE_BODY` または `ISSUE_TEXT` がある場合に Issue駆動モードと判定する処理であること、`!!` が Python の `bool(...)` に近い boolean 化であることを補足しました。

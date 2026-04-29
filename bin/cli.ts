@@ -140,6 +140,10 @@ async function main() {
     const localInstructions = baseInstructions;
 
     const issueText = process.env.ISSUE_TEXT || '';
+    // ここから下の `...` で囲まれた部分はコメントではなく、複数行の文字列です。
+    // TypeScript のテンプレートリテラルなので、改行を含む Markdown 風の指示文をそのまま変数に入れられます。
+    // ${...} の部分だけは実行時に値へ置き換わり、Python の f"""...{value}...""" に近い動きです。
+    // この文字列は Issue駆動モードのとき、Agent に渡す追加指示として使われます。
     const issueDrivenInstructions = `${baseInstructions}
 
 ## CI向け追加指示

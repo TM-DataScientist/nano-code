@@ -79,6 +79,9 @@ async function main() {
     
     // ワークスペースディレクトリを作成
     if (!existsSync(WORKSPACE_ROOT)) {
+        // mkdirSync は同期的にディレクトリを作成するNode.jsの関数です。
+        // { recursive: true } により、途中の親ディレクトリがなければまとめて作成できます。
+        // Pythonなら Path(WORKSPACE_ROOT).mkdir(parents=True, exist_ok=True) に近い処理です。
         mkdirSync(WORKSPACE_ROOT, { recursive: true });
     }
 

@@ -152,6 +152,10 @@ async function execCommandExecute(args: Record<string, unknown>): Promise<string
             if (!input.commandArgs.every((arg) => typeof arg === 'string')) {
                 throw new Error('commandArgs は文字列配列で指定してください');
             }
+            // as string[] は型アサーションで、実行時には何も変換しません。
+            // Array.isArray で unknown[] になり、every で全要素が string と確認済みですが、
+            // TypeScript はそれを自動で string[] と推論できないため、ここで手動で型を教えます。
+            // Python の cast(list[str], x) に近いですが、どちらも実行時には何もしません。
             commandArgs = input.commandArgs as string[];
         }
         commandForCheck = [commandName, ...commandArgs].join(' ');

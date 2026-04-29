@@ -116,6 +116,9 @@ export class Agent {
         // 戻り値のオブジェクト形をその場で型定義しています。
         // 小さな型なら別名を作らず、このようにインラインで書くことがあります。
         text: string;
+        // 'stop' | 'max_steps' | ... は文字列リテラルのunion型です。
+        // finishReason には、この5種類の文字列だけを入れられます。
+        // Pythonなら Literal["stop", "max_steps", ...] に近い制約です。
         finishReason: 'stop' | 'max_steps' | 'length' | 'content_filter' | 'error';
         usage?: { totalTokens: number };
     }> {

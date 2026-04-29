@@ -47,6 +47,9 @@ async function main() {
     // configに反映
     config.sandbox = values['sandbox'] ?? false;
     if (values['allowed-domains']) {
+        // "example.com,api.example.com" のような文字列を split(',') で配列に分割します。
+        // ... はスプレッド構文で、配列そのものではなく各ドメインを push の個別引数として渡します。
+        // Pythonなら config.allowed_domains.extend(values["allowed-domains"].split(",")) に近い処理です。
         config.allowedDomains.push(...values['allowed-domains'].split(','));
     }
 

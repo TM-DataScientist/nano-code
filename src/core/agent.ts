@@ -90,6 +90,8 @@ export class Agent {
         });
 
         // 3. 戦略B: それでも溢れるなら、古い順に削除
+        // 戦略Aで長いtool結果を省略した後の文字数を、3つの塊に分けて再計算しています。
+        // content?.length は content がある時だけ長さを読み、無い場合は undefined になるので、|| 0 で0文字扱いにします。
         totalLength = (systemMessage.content?.length || 0) +
                       middleMessages.reduce((sum, m) => sum + (m.content?.length || 0), 0) +
                       recentMessages.reduce((sum, m) => sum + (m.content?.length || 0), 0);

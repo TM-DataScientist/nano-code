@@ -2,6 +2,7 @@
 
 ## 2026-04-29
 
+- 添付画像の内容をもとに、`workspace/AGENTS.md` を作成し、プロジェクト概要・テスト・コーディング規約・編集方針をMarkdownで記載しました。
 - `src/providers/modelFactory.ts` の `const openai = createOpenAIResponses({ apiKey });` について、OpenAI Responses API 用のモデル生成関数を作る処理であり、`{ apiKey }` が `{ apiKey: apiKey }` の省略記法であることを補足しました。
 - `src/providers/modelFactory.ts` の `const useResponses = options?.useResponses ?? process.env.USE_RESPONSES_API === 'true';` について、引数指定を優先し、未指定なら環境変数を `'true'` と比較して boolean 化する処理であること、`?.` と `??` の役割を補足しました。
 - `src/providers/modelFactory.ts` の `export function createModelFromEnv(options?: { useResponses?: boolean }): LanguageModel` について、他ファイルへ公開する `export`、省略可能引数 `options?`、省略可能プロパティ `useResponses?`、戻り値型 `LanguageModel` の意味を補足しました。

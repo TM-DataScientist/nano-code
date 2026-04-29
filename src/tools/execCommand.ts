@@ -133,6 +133,10 @@ async function execCommandExecute(args: Record<string, unknown>): Promise<string
         commandName = parts[0] || '';
         commandArgs = parts.slice(1);
         commandForCheck = command;
+    // typeof は実行時に変数の型を文字列で返す演算子です（Python の type(x) is str に近い）。
+    // commandName の型は unknown（何が来るか不明）なので、使う前に型チェックが必須です。
+    // この条件が true のブロック内だけ TypeScript が commandName を string と認識します（型ガード）。
+    // { commandName: "git", commandArgs: ["status"] } のように分割して渡された場合のルートです。
     } else if (typeof input.commandName === 'string') {
         commandName = input.commandName;
         if (Array.isArray(input.commandArgs)) {

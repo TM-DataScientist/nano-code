@@ -2,6 +2,7 @@
 
 ## 2026-04-29
 
+- `bin/cli.ts` の `parseArgs({ args: process.argv.slice(2), options: ..., allowPositionals: true })` について、Node.js標準APIでCLI引数を解析し、`values` にオプション、`positionals` に通常引数を分ける処理であり、Python の `argparse` に近いことを補足しました。
 - `bin/cli.ts` の `const WORKSPACE_ROOT = join(process.cwd(), 'workspace');` について、CLI 起動時のカレントディレクトリ直下にある `workspace` のパスを OS に合わせて組み立てる処理であり、Python の `Path.cwd() / "workspace"` に近いことを補足しました。
 - `src/core/prompt.ts` の `fs.existsSync(agentsPath)` について、`AGENTS.md` のパスが存在するかを同期的に確認して `true` / `false` を返す処理であり、Python の `Path.exists()` や `os.path.exists()` に近いことを補足しました。
 - `src/core/prompt.ts` の `const base = fs.readFileSync(basePath, 'utf-8');` について、`prompt.md` を同期的に読み込み、`'utf-8'` 指定により文字列として取得する処理であることを Python の `open(...).read()` と対応づけて補足しました。

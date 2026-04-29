@@ -22,15 +22,21 @@ function maskSecret(value: string | undefined): string {
 const WORKSPACE_ROOT = join(process.cwd(), 'workspace');
 
 async function main() {
+    // parseArgs はコマンドライン引数を解析するNode.js標準APIで、Pythonの argparse に近い役割です。
+    // process.argv.slice(2) は `bun run bin/cli.ts` など実行コマンド部分を除き、ユーザーが渡した引数だけを取り出します。
+    // values には --yolo のようなオプション、positionals にはオプションではない通常の引数が入ります。
     const { values, positionals } = parseArgs({
         args: process.argv.slice(2),
         options: {
+            // boolean オプションは指定されると true になり、未指定時は default の false になります。
+            // allowed-domains は文字列を受け取るオプションです。
             'yolo': { type: 'boolean', default: false },
             'stream': { type: 'boolean', default: false },
             'responses': { type: 'boolean', default: false },
             'sandbox': { type: 'boolean', default: false },
             'allowed-domains': { type: 'string' },
         },
+        // allowPositionals: true により、オプションではないタスク本文のような引数も許可します。
         allowPositionals: true,
     });
 

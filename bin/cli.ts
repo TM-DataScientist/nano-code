@@ -58,6 +58,10 @@ async function main() {
     // 2. なければ環境変数 ISSUE_BODY（手動入力）を使用
     // 3. なければ ISSUE_TEXT（Issue本文）があればIssue駆動モード
     let userPrompt = positionals.join(' ');
+    // !userPrompt は「CLI引数でタスク本文が渡されていない」ことを表します。
+    // process.env.ISSUE_BODY || process.env.ISSUE_TEXT は、どちらか片方でも値があればその文字列を返します。
+    // 先頭の !! は文字列や undefined を true / false に変換する書き方で、Python の bool(...) に近いです。
+    // つまりこの行は「CLI引数がなく、Issue由来の本文が環境変数にあるなら Issue駆動モード」と判定します。
     const isIssueDriven = !userPrompt && !!(process.env.ISSUE_BODY || process.env.ISSUE_TEXT);
 
     if (!userPrompt) {

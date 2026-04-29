@@ -13,6 +13,9 @@ export function createModelFromEnv(options?: { useResponses?: boolean }): Langua
     const provider = process.env.LLM_PROVIDER;
     const modelName = process.env.LLM_MODEL;
     const apiKey = process.env.LLM_API_KEY;
+    // options?.useResponses は options が渡された時だけ useResponses を読みます。
+    // ?? は左側が null または undefined の時だけ右側を使う演算子です。
+    // つまり引数で指定があればそれを優先し、未指定なら USE_RESPONSES_API === 'true' で環境変数をboolean化します。
     const useResponses = options?.useResponses ?? process.env.USE_RESPONSES_API === 'true';
 
     // 環境変数が足りない場合は早めに例外を投げ、原因を分かりやすくします。

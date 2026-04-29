@@ -167,6 +167,9 @@ async function execCommandExecute(args: Record<string, unknown>): Promise<string
         throw new Error('コマンドが空です');
     }
 
+    // .includes(x) は配列に x が含まれるかを true/false で返します（Python の x in list に対応）。
+    // ! で反転するので「許可リストに含まれなければ true」→ エラーを投げます。
+    // Python: if commandName not in ALLOWED_COMMANDS: raise ...
     if (!ALLOWED_COMMANDS.includes(commandName)) {
         // 許可リスト方式にすることで、想定外のコマンド実行を防ぎます。
         throw new Error(`コマンド ${commandName} は許可されていません`);

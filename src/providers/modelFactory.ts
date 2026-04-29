@@ -34,6 +34,8 @@ export function createModelFromEnv(options?: { useResponses?: boolean }): Langua
         // provider名を小文字にして、入力の大文字小文字差を吸収しています。
         case 'openai': {
             if (useResponses) {
+                // createOpenAIResponses に APIキー設定を渡し、OpenAI Responses API用のモデル生成関数を作ります。
+                // { apiKey } は { apiKey: apiKey } の省略記法で、Pythonの dict に近い設定オブジェクトです。
                 const openai = createOpenAIResponses({ apiKey });
                 return openai(modelName);
             }

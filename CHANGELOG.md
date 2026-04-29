@@ -1,5 +1,9 @@
 # Change Log
 
+## 2026-04-29
+
+- `src/tools/execCommand.ts` の `const input = args as ExecCommandInput` について、`as` が実行時変換ではなく TypeScript への型アサーションであることを補足しました。
+
 ## 2026-04-28
 
 - `src/tools/execCommand.ts` の `const ch = input[i] as string;` について、`noUncheckedIndexedAccess: true` により型が `string | undefined` になるためループ条件で安全を保証した上で `as string` で抑制していること、実行時には Python の `s[i]` 同様に長さ 1 の文字列であることを補足しました。

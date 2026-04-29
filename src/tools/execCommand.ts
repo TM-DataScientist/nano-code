@@ -101,6 +101,8 @@ export function parseCommand(input: string): string[] {
 
 async function execCommandExecute(args: Record<string, unknown>): Promise<string> {
     // LLMからの入力は信用せず、まず期待する形かどうかを確認します。
+    // `as ExecCommandInput` は型アサーションで、Pythonのキャストのように値を変換する処理ではありません。
+    // TypeScriptに「この後は command / commandName / commandArgs を持つかもしれない入力として扱う」と伝えています。
     const input = args as ExecCommandInput;
     let commandName = '';
     let commandArgs: string[] = [];

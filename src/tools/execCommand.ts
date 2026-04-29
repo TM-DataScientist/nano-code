@@ -182,6 +182,9 @@ async function execCommandExecute(args: Record<string, unknown>): Promise<string
         }
     }
 
+    // for...of は配列の各要素を順番に取り出すループです（Python の for arg in command_args: に対応）。
+    // const は「このループ内で arg を再代入しない」宣言で、イテレーションごとに新しい arg が作られます。
+    // 各引数がパスを含むか調べ、ワークスペース外へのアクセス（パストラバーサル）を防ぎます。
     for (const arg of commandArgs) {
         if (arg.startsWith('/') || arg.startsWith('.') || arg.includes('/') || arg.includes('\\')) {
             const resolvedPath = path.resolve(WORKSPACE_ROOT, arg);

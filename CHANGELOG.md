@@ -2,6 +2,7 @@
 
 ## 2026-04-29
 
+- `src/tools/execCommand.ts` の `for (const arg of commandArgs)` について、Python の `for arg in list:` に対応する `for...of` ループであること、`const` がループ内の再代入を防ぐ宣言であること、各引数のパストラバーサルチェックが目的であることを補足しました。
 - `src/tools/execCommand.ts` の `!ALLOWED_COMMANDS.includes(commandName)` について、`.includes(x)` が Python の `x in list` に対応し、`!` で反転することで「許可リストに含まれないコマンドはエラー」を意味することを補足しました。
 - `src/tools/execCommand.ts` の `commandArgs = input.commandArgs as string[]` について、`as string[]` が実行時変換ではなく型アサーション（TypeScript への型の通知）であること、`Array.isArray` → `every` チェックの後で `unknown[]` を `string[]` と教える必要がある理由を補足しました。
 - `src/tools/execCommand.ts` の `!input.commandArgs.every((arg) => typeof arg === 'string')` について、アロー関数が Python の `lambda`、`.every()` が `all()`、`!` が `not` に対応し、「1つでも string でない要素があればエラー」を意味することを補足しました。

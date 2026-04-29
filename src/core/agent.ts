@@ -181,6 +181,9 @@ export class Agent {
             if (response.toolCalls && response.toolCalls.length > 0) {
                 // LLMがツール呼び出しを要求した場合は、まず assistant の発言として履歴に残します。
                 // 次に各ツールを実行し、その結果を role: 'tool' のメッセージとして追加します。
+                // push は配列末尾への追加で、Python の list.append(...) に近い処理です。
+                // response.text || '' は、本文が無い場合でも空文字を入れて content を文字列にそろえます。
+                // toolCalls も一緒に履歴へ残すことで、後続ステップで「どのツールを呼ぼうとしたか」を追跡できます。
                 messages.push({
                     role: 'assistant',
                     content: response.text || '',

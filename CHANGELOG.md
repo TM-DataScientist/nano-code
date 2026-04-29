@@ -2,6 +2,7 @@
 
 ## 2026-04-29
 
+- `src/core/agent.ts` の `messages.push({ role: 'assistant', content: response.text || '', toolCalls: response.toolCalls })` について、assistant のツール呼び出し要求を会話履歴へ追加する処理であり、`push` が Python の `list.append(...)` に近いこと、`response.text || ''` が本文未設定時の空文字フォールバックであることを補足しました。
 - `src/core/agent.ts` の `finishReason: 'stop' | 'max_steps' | 'length' | 'content_filter' | 'error';` について、5種類の文字列だけを許す文字列リテラルunion型であり、Python の `Literal[...]` に近い制約であることを補足しました。
 - `src/core/agent.ts` の `middleMessages.reduce((sum, m) => sum + (m.content?.length || 0), 0)` について、配列を1つの合計値へ畳み込む処理であり、Python の `sum(...)` に近いことを補足しました。
 - `src/core/agent.ts` の `const removed = middleMessages.shift();` について、配列先頭の要素を取り出しつつ削除する処理であり、Python の `pop(0)` に近く、中間履歴の古いメッセージから捨てる意図であることを補足しました。

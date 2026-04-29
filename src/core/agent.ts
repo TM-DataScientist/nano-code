@@ -192,6 +192,8 @@ export class Agent {
 
                 for (const toolCall of response.toolCalls) {
                     // find は条件に合う最初の要素を返します。見つからない場合は undefined です。
+                    // this.tools はこのAgentが使えるツール一覧で、t => t.name === toolCall.name は名前一致の判定関数です。
+                    // Pythonなら next((t for t in tools if t.name == tool_call.name), None) に近い検索です。
                     const tool = this.tools.find(t => t.name === toolCall.name);
                     if (tool) {
                         console.log(`[ツール] ${toolCall.name}(${JSON.stringify(toolCall.args)})`);

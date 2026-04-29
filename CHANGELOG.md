@@ -2,6 +2,7 @@
 
 ## 2026-04-29
 
+- `src/tools/execCommand.ts` の `child.stdout.on('data', (data: Buffer) => {...})` について、イベント駆動でチャンク単位に届く標準出力を受け取る仕組み、`Buffer` が Python の `bytes` に対応し `.toString()` が `.decode()` に相当すること、`MAX_OUTPUT_LENGTH` で出力を打ち切るフラグ処理を補足しました。
 - `src/tools/execCommand.ts` の `spawn(commandName, commandArgs, { cwd, timeout, shell })` について、Python の `subprocess.Popen` に対応すること、各オプション（`cwd`/`timeout`/`shell: false`）の意味と `shell: false` がシェルインジェクション防止に重要である理由を補足しました。
 - `src/tools/execCommand.ts` の `for (const arg of commandArgs)` について、Python の `for arg in list:` に対応する `for...of` ループであること、`const` がループ内の再代入を防ぐ宣言であること、各引数のパストラバーサルチェックが目的であることを補足しました。
 - `src/tools/execCommand.ts` の `!ALLOWED_COMMANDS.includes(commandName)` について、`.includes(x)` が Python の `x in list` に対応し、`!` で反転することで「許可リストに含まれないコマンドはエラー」を意味することを補足しました。

@@ -215,6 +215,11 @@ async function execCommandExecute(args: Record<string, unknown>): Promise<string
         let stdoutTruncated = false;
         let stderrTruncated = false;
 
+        // child.stdout はプロセスの標準出力ストリームです。
+        // .on('data', callback) は「データが届いたらコールバックを呼ぶ」イベントリスナーの登録です。
+        // 出力はバッファリングの都合で複数回のチャンク（かたまり）に分けて届くため、stdout += で累積します。
+        // data は Buffer（Python の bytes に対応）なので .toString() で文字列に変換します（Python の .decode() 相当）。
+        // MAX_OUTPUT_LENGTH を超えたら追記をやめ、stdoutTruncated フラグで「省略あり」を記録します。
         child.stdout.on('data', (data: Buffer) => {
             if (stdout.length < MAX_OUTPUT_LENGTH) {
                 stdout += data.toString();

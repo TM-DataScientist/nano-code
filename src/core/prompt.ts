@@ -27,6 +27,8 @@ export function loadInstructions(workspaceRoot: string): string {
   // workspaceRoot はエージェントが作業するプロジェクトのルートです。
   // そこに AGENTS.md があれば、共通プロンプトに追加してプロジェクト固有ルールとして扱います。
   const agentsPath = path.join(workspaceRoot, 'AGENTS.md');
+  // fs.existsSync は指定したパスが存在するかを同期的に確認し、true / false を返します。
+  // Python なら Path(agentsPath).exists() や os.path.exists(agentsPath) に近い判定です。
   if (fs.existsSync(agentsPath)) {
     const agents = fs.readFileSync(agentsPath, 'utf-8');
     return `${base}\n\n# プロジェクト固有の指示\n\n${agents}`;

@@ -75,6 +75,8 @@ export class Agent {
         let middleMessages = messages.slice(1, -4);
 
         // 2. 戦略A: 古いツール実行結果を「省略」に置換
+        // map は配列の各要素を1つずつ処理し、return した値で新しい配列を作ります。
+        // msg => { ... } はアロー関数で、Pythonなら小さな関数や lambda を渡す感覚に近いです。
         middleMessages = middleMessages.map(msg => {
             // `...msg` はスプレッド構文で、既存オブジェクトのプロパティをコピーします。
             // Pythonで dict を `{**msg, "content": ...}` と作り直す感覚に近いです。

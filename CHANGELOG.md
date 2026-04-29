@@ -2,6 +2,7 @@
 
 ## 2026-04-29
 
+- `src/core/agent.ts` の `middleMessages = middleMessages.map(msg => { ... })` について、配列の各要素を処理して新しい配列を作る `map` と、Python の小さな関数や `lambda` に近いアロー関数の意味を補足しました。
 - `src/core/agent.ts` の `messages.slice(1, -4)` について、先頭の system メッセージと末尾4件の直近メッセージを除いた中間履歴を取り出し、その部分だけを圧縮・削除候補にする処理であることを補足しました。
 - `src/core/agent.ts` の `messages.slice(-4)` について、配列末尾4件を取り出す書き方であり、Python の `messages[-4:]` に近いことと、直近の会話を圧縮・削除対象から外すために4件を残していることを補足しました。
 - `src/core/agent.ts` の `constructor(config: AgentConfig)` について、new Agent(config) 直後に自動実行される初期化用メソッドであり、Python の `__init__` と同じように this.xxx へインスタンス専用の状態を保存する役割であることを補足しました。

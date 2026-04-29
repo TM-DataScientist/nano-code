@@ -196,8 +196,14 @@ async function execCommandExecute(args: Record<string, unknown>): Promise<string
     }
 
     return new Promise((resolve, reject) => {
+        // spawn(cmd, args, options) は外部プロセスを起動する Node.js 関数です（Python の subprocess.Popen に対応）。
+        // 第1引数: コマンド名、第2引数: 引数配列（Python の [cmd] + args に対応）、第3引数: オプション。
+        // cwd: コマンドを実行するディレクトリ（Python の cwd= と同じ）。
+        // timeout: 30000ms（30秒）でプロセスを強制終了（Python の timeout=30 に対応、単位が ms）。
         // shell: false により、シェルを経由せず直接コマンドを起動します。
         // これにより `; rm -rf /` のようなシェル構文が解釈されにくくなります。
+        // shell=True だと /bin/sh 経由になりインジェクションの危険があるため false が安全（Python の shell=False と同じ理由）。
+        // child には起動したプロセスオブジェクトが入り、この後 stdout/stderr/close イベントで出力を受け取ります。
         const child = spawn(commandName, commandArgs, {
             cwd: WORKSPACE_ROOT,
             timeout: 30000,

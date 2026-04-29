@@ -112,6 +112,8 @@ async function execCommandExecute(args: Record<string, unknown>): Promise<string
         const command = input.command;
         // ; や $ など、シェルで別コマンド実行につながる文字を拒否します。
         const dangerousChars = /[;&`$]/;
+        // dangerousChars.test(command) は、command に危険文字が1つでも含まれるかを true/false で返します。
+        // Python でいう re.search(pattern, command) is not None に近い判定です。
         if (dangerousChars.test(command)) {
             throw new Error('セキュリティ上の理由により、シェルメタ文字を含むコマンドは実行できません');
         }

@@ -2,6 +2,7 @@
 
 ## 2026-04-29
 
+- `src/core/prompt.ts` の `const __filename = fileURLToPath(import.meta.url);` について、ES Modules では `__filename` が標準で存在しないため、`import.meta.url` の `file:///...` URL を OS が扱える通常のファイルパスへ変換していることを補足しました。
 - 添付画像の内容をもとに、`workspace/AGENTS.md` を作成し、プロジェクト概要・テスト・コーディング規約・編集方針をMarkdownで記載しました。
 - `src/providers/modelFactory.ts` の `const openai = createOpenAIResponses({ apiKey });` について、OpenAI Responses API 用のモデル生成関数を作る処理であり、`{ apiKey }` が `{ apiKey: apiKey }` の省略記法であることを補足しました。
 - `src/providers/modelFactory.ts` の `const useResponses = options?.useResponses ?? process.env.USE_RESPONSES_API === 'true';` について、引数指定を優先し、未指定なら環境変数を `'true'` と比較して boolean 化する処理であること、`?.` と `??` の役割を補足しました。

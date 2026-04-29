@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url';
 
 // ES Modules では CommonJS の __filename / __dirname が標準では使えません。
 // import.meta.url をファイルパスへ変換して、Python の __file__ に近い値を作っています。
+// import.meta.url は "file:///..." 形式の URL なので、fileURLToPath で OS が扱える通常のパス文字列に戻します。
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 

@@ -145,6 +145,10 @@ async function execCommandExecute(args: Record<string, unknown>): Promise<string
         // この if が true の場合、ブロック内で TypeScript は input.commandArgs を unknown[] と認識します（型ガード）。
         // commandArgs は省略可能なため undefined のこともあり、その場合はこの if をスキップし commandArgs は [] のままです。
         if (Array.isArray(input.commandArgs)) {
+            // (arg) => typeof arg === 'string' はアロー関数（Python の lambda arg: isinstance(arg, str) に対応）。
+            // .every(fn) は「全要素が fn を満たすか」を返します（Python の all(fn(x) for x in arr) に対応）。
+            // ! で結果を反転するので、「1つでも string でない要素があれば true」→ エラーを投げます。
+            // Python: if not all(isinstance(arg, str) for arg in args): raise ...
             if (!input.commandArgs.every((arg) => typeof arg === 'string')) {
                 throw new Error('commandArgs は文字列配列で指定してください');
             }

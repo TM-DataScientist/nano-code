@@ -31,7 +31,9 @@ export class Agent {
 
     constructor(config: AgentConfig) {
         // constructor は Python の __init__ に相当します。
-        // 渡された設定をインスタンスフィールドへ保存し、後続の generate で使います。
+        // new Agent(config) でインスタンスを作った直後に自動実行される初期化用メソッドです。
+        // 渡された設定を this.xxx へ保存すると、その Agent インスタンス専用の状態になります。
+        // ここで保存した値は、後続の generate など別メソッドから this.name のように参照します。
         this.name = config.name;
         this.model = config.model;
         this.instructions = config.instructions;

@@ -2,6 +2,7 @@
 
 ## 2026-04-29
 
+- `src/core/agent.ts` の `constructor(config: AgentConfig)` について、new Agent(config) 直後に自動実行される初期化用メソッドであり、Python の `__init__` と同じように this.xxx へインスタンス専用の状態を保存する役割であることを補足しました。
 - `src/core/approval.ts` の `new Promise((resolve) => { ... })` と `readline.createInterface({ input: process.stdin, output: process.stdout })` について、コールバックAPIを `await` しやすい Promise に包む考え方と、標準入力・標準出力を使ったCLI対話の作り方をPython経験者向けに補足しました。
 - `chapters/04-tools-demo.ts` を `bun run chapters/04-tools-demo.ts` で実行し、`writeFile` / `readFile` / `execCommand` の基本動作と、パストラバーサル・コマンドインジェクション拒否の安全性チェックが成功することを確認しました。
 - `src/tools/index.ts` の `import` と `export` の順番を慣習に合わせて `import` 先・`export` 後に並び替えました（動作は変わりません）。

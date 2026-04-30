@@ -70,6 +70,15 @@ export const createBranch = {
         },
         required: ['branchName']
     },
+    // execute: async (args: { branchName: string }) => { ... } について
+    // execute はツール実行時に Agent から呼ばれる非同期関数をプロパティとして持ちます。
+    // Python でいう「辞書に関数オブジェクトを値として入れておく」設計に近いです。
+    // async は非同期関数の宣言で、Python の async def に対応します。
+    // args: { branchName: string } は引数の型注釈で、
+    //   Python の def execute(args: dict) や TypedDict に近く、
+    //   args.branchName が string 型であることをコンパイラに伝えます。
+    // validateBranchName(branchName) は入力値の安全性を確認する関数を呼び出しています。
+    //   問題があれば throw でエラーを投げ、問題なければ何も返さず（void）次の処理へ進みます。
     execute: async (args: { branchName: string }) => {
         const branchName = args.branchName;
         validateBranchName(branchName);

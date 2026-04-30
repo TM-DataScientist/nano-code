@@ -1,5 +1,9 @@
 # Change Log
 
+## 2026-04-30 (7)
+
+- `src/tools/git.ts` の `createBranch` の `execute: async (args: { branchName: string }) => {` について、`execute` がツール実行時に Agent から呼ばれる非同期関数であること、`async` が Python の `async def` に対応すること、`args: { branchName: string }` が Python の TypedDict に近い引数の型注釈であること、`validateBranchName` が検証専用の `void` 関数で問題があれば `throw` する設計であることを補足しました。
+
 ## 2026-04-30 (6)
 
 - `src/tools/git.ts` の `commitChanges` 内の `await execCommand.execute({ commandName: 'git', commandArgs: ['status', '--porcelain'] })` について、`--porcelain` がスクリプト向けの簡潔な出力形式であること、変更があれば行が返り・なければ空文字が返ること、`await` が Python の `await asyncio.coroutine()` に対応すること、`execCommand.execute` が stdout 文字列を返す Promise を返す処理であることを補足しました。

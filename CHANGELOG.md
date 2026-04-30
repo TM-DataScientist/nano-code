@@ -1,5 +1,9 @@
 # Change Log
 
+## 2026-04-30 (11)
+
+- `src/tools/webFetch.ts` の `const url = args.url as string` について、`as string` が Python にない概念の型アサーション（コンパイラへの宣言）であり実行時の変換は行わないこと、`unknown` 型の値を `string` として扱わせる意図であること、実際の値が文字列でなくても TypeScript はエラーを出さない点を補足しました。
+
 ## 2026-04-30 (10)
 
 - `src/tools/webFetch.ts` の `typeof` について、値の型名を文字列で返す演算子であること、Python の `isinstance(x, str)` に近い役割を持つこと、`typeof "hello" → "string"` などの返り値一覧、`as string` との違い（コンパイル時の型強制 vs 実行時チェック）を補足しました。

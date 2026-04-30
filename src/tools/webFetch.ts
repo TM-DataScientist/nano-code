@@ -34,6 +34,13 @@ async function webFetchExecute(args: Record<string, unknown>): Promise<string> {
     //   現在のコードは as string で型を強制しているだけなので、
     //   実行時に url が文字列でなくても TypeScript はエラーにしません。
     //   typeof で事前にチェックすると実行時エラーをより早く・明確に検出できます。
+    //
+    // const url = args.url as string; について:
+    //   args.url は Record<string, unknown> から取り出した値なので型は unknown です。
+    //   as string は「この値を string として扱え」と TypeScript コンパイラに伝える型アサーションです。
+    //   Python にはない概念で、実行時の変換（キャスト）は行いません。あくまでコンパイラへの宣言です。
+    //   Python の型ヒント str(x) とは異なり、実際の値の型は変わりません。
+    //   つまり args.url が実際には数値でも、TypeScript はエラーを出さずに url: string として扱います。
     const url = args.url as string;
 
     // URLのパース（バリデーション含む）

@@ -16,6 +16,24 @@ import { config } from '../config';
 async function webFetchExecute(args: Record<string, unknown>): Promise<string> {
     // Tool の execute は汎用的に Record<string, unknown> を受けるため、
     // ここで url を string として取り出しています。本番では typeof チェックを追加するとさらに安全です。
+    //
+    // typeof とは:
+    //   typeof は値の型名を文字列で返す演算子です。
+    //   Python の type(x).__name__ や isinstance(x, str) に近い役割を持ちます。
+    //   例: typeof "hello"  → "string"
+    //       typeof 42       → "number"
+    //       typeof true     → "boolean"
+    //       typeof {}       → "object"
+    //       typeof undefined → "undefined"
+    //
+    //   型チェックの書き方:
+    //     if (typeof args.url !== 'string') throw new Error('url は文字列である必要があります');
+    //   Python で書くなら:
+    //     if not isinstance(args["url"], str): raise TypeError("url must be str")
+    //
+    //   現在のコードは as string で型を強制しているだけなので、
+    //   実行時に url が文字列でなくても TypeScript はエラーにしません。
+    //   typeof で事前にチェックすると実行時エラーをより早く・明確に検出できます。
     const url = args.url as string;
 
     // URLのパース（バリデーション含む）

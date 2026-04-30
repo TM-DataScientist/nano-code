@@ -1,5 +1,9 @@
 # Change Log
 
+## 2026-04-30 (10)
+
+- `src/tools/webFetch.ts` の `typeof` について、値の型名を文字列で返す演算子であること、Python の `isinstance(x, str)` に近い役割を持つこと、`typeof "hello" → "string"` などの返り値一覧、`as string` との違い（コンパイル時の型強制 vs 実行時チェック）を補足しました。
+
 ## 2026-04-30 (9)
 
 - `src/tools/webFetch.ts` の `async function webFetchExecute(args: Record<string, unknown>): Promise<string>` について、`async` が Python の `async def` に対応すること、`Record<string, unknown>` が Python の `dict[str, Any]` に近いが `unknown` は `any` より厳しく使用前に型チェックが必要なこと、`Promise<string>` が Python の `async def f() -> str:` に対応し `await` で `string` を取り出せることを補足しました。なお対象ファイルは `github.ts` ではなく `webFetch.ts` に存在します。

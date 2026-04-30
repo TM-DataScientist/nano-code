@@ -1,5 +1,9 @@
 # Change Log
 
+## 2026-04-30 (14)
+
+- `src/tools/webFetch.ts` の `targetUrl.hostname === domain || targetUrl.hostname.endsWith(...)` について、`===` が TypeScript の厳密等価演算子で Python の `==` に相当すること、TypeScript には `==`（型変換あり）と `===`（型変換なし）の2種類があり常に `===` を使うのがベストプラクティスであること、`endsWith` の先頭に `.` を付けることで "evil-example.com" の誤許可を防ぐ設計であることを補足しました。
+
 ## 2026-04-30 (13)
 
 - `src/tools/webFetch.ts` の `targetUrl = new URL(url)` について、`URL` が Python の `urllib.parse.urlparse()` に相当する組み込みクラスであること、`new` がコンストラクタ呼び出しのキーワードであること、不正な URL 形式のとき例外を throw するためバリデーションを兼ねること、`let` が再代入可能な変数宣言で try 外で宣言して後続コードでも参照できる設計であることを補足しました。

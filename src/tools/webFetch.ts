@@ -74,11 +74,18 @@ async function webFetchExecute(args: Record<string, unknown>): Promise<string> {
     //   配列の各要素が domain に順番に渡され、条件を満たすかどうかを評価します。
     //
     //   targetUrl.hostname === domain
-    //     完全一致チェック。例: "example.com" === "example.com" → true
+    //     === は「厳密等価演算子」です。値と型の両方が一致するときだけ true を返します。
+    //     Python の == に相当しますが、TypeScript には ==（緩い比較）と === （厳密比較）の2種類があります。
+    //       "1" ==  1  → true  （== は型変換してから比較するため文字列と数値が一致してしまう）
+    //       "1" === 1  → false （=== は型変換しないため文字列と数値は不一致）
+    //     TypeScript では型の意図しない一致を防ぐため、常に === を使うのがベストプラクティスです。
+    //     Python の == は常に厳密比較なので、Python 経験者は TypeScript でも === を使えば Python と同じ感覚です。
+    //
     //   targetUrl.hostname.endsWith(`.${domain}`)
     //     サブドメインチェック。`.${domain}` はテンプレートリテラルで ".example.com" を生成します。
     //     例: "api.example.com".endsWith(".example.com") → true
     //     Python の "api.example.com".endswith(".example.com") と同じです。
+    //     先頭に . を付けることで "evil-example.com" のような偽ドメインを誤許可しない設計になっています。
     //   || は Python の or に対応し、どちらかが true なら true を返します。
     const isAllowed = config.allowedDomains.some(domain =>
         // 完全一致またはサブドメインだけを許可します。

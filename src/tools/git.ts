@@ -115,6 +115,12 @@ export const commitChanges = {
         }
 
         try {
+            // `git status --porcelain` を実行し、コミット前に変更があるかを確認します。
+            // --porcelain は人間向けの装飾を省いたスクリプト向け出力形式を指定するオプションです。
+            // 変更ファイルがあれば " M src/foo.ts" のような行が返り、なければ空文字が返ります。
+            // Python の subprocess.run(['git', 'status', '--porcelain'], capture_output=True) に近い処理です。
+            // await は非同期処理の完了を待つキーワードで、Python の await asyncio.coroutine() に対応します。
+            // execCommand.execute はコマンドを実行して stdout 文字列を返す Promise を返します。
             const status = await execCommand.execute({
                 commandName: 'git',
                 commandArgs: ['status', '--porcelain']

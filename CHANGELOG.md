@@ -1,5 +1,9 @@
 # Change Log
 
+## 2026-04-30 (6)
+
+- `src/tools/git.ts` の `commitChanges` 内の `await execCommand.execute({ commandName: 'git', commandArgs: ['status', '--porcelain'] })` について、`--porcelain` がスクリプト向けの簡潔な出力形式であること、変更があれば行が返り・なければ空文字が返ること、`await` が Python の `await asyncio.coroutine()` に対応すること、`execCommand.execute` が stdout 文字列を返す Promise を返す処理であることを補足しました。
+
 ## 2026-04-30 (5)
 
 - `src/tools/git.ts` の `writeTempFile` 内の `if (!existsSync(WORKSPACE_ROOT))` について、`existsSync` が Python の `os.path.exists()` に相当する同期的な存在確認であること、`!` で反転して「存在しない場合のみ」ディレクトリを作成する処理であること、`mkdirSync` の `{ recursive: true }` が Python の `Path(...).mkdir(parents=True, exist_ok=True)` に近いことを補足しました。

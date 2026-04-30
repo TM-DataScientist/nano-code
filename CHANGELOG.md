@@ -1,5 +1,13 @@
 # Change Log
 
+## 2026-04-30 (2)
+
+- `src/tools/github.ts` の `createPullRequest` を修正し、Fork 元（upstream）ではなく自分のフォークだけに PR を作成・操作できるようにしました。
+  - **背景:** `gh pr create` はフォーク上ではデフォルトで upstream に PR を送ろうとします（GitHub CLI の仕様）。
+  - **対応:** `GITHUB_REPO_OWNER` と `GITHUB_REPO_NAME` 環境変数が設定されているとき、`gh pr create` / `gh pr list` / `gh pr edit` に `--repo OWNER/NAME` を自動付与するようにしました。これらの変数は `nano-code.yml` の `env` セクションで `github.repository_owner` / `github.event.repository.name` から自動セットされます。
+  - **ローカル実行への影響なし:** 環境変数が未設定の場合は空配列になるため、ローカルでの動作は従来通りです。
+  - **エビデンス:** GitHub CLI のデフォルト挙動については公式ドキュメント（https://cli.github.com/manual/gh_pr_create）に記載されており、フォーク上では親リポジトリへの PR を優先する仕様となっています。
+
 ## 2026-04-30
 
 - `.github/workflows/nano-code.yml` の全セクションに Python 開発者向けコメントを追加しました。`on:`（イベントトリガー）、`permissions:`（最小権限の原則）、`if:`（実行条件と`fromJSON`/`contains`）、`runs-on:`、`env:`（`secrets`/`vars`の違い）、`--yolo`フラグの意味を補足しました。

@@ -76,10 +76,18 @@ export const createPullRequest = {
         validateBranchName(args.head);
         validateBranchName(args.base);
 
+        // GITHUB_REPO_OWNER / GITHUB_REPO_NAME が設定されている場合は --repo を付けて
+        // Fork 元の upstream ではなく自分のフォーク内で PR を作成・操作します。
+        // GitHub Actions では nano-code.yml の env セクションでこれらが自動セットされます。
+        // ローカル実行時は未設定のため repoArgs は空配列になり動作は変わりません。
+        const repoOwner = process.env.GITHUB_REPO_OWNER;
+        const repoName = process.env.GITHUB_REPO_NAME;
+        const repoArgs = repoOwner && repoName ? ['--repo', `${repoOwner}/${repoName}`] : [];
+
         const listResult = await execCommand.execute({
             // 既存PRがあれば新規作成ではなく更新するため、まず gh pr list で確認します。
             commandName: 'gh',
-            commandArgs: ['pr', 'list', '--head', args.head, '--base', args.base, '--state', 'open', '--json', 'number']
+            commandArgs: ['pr', 'list', '--head', args.head, '--base', args.base, '--state', 'open', '--json', 'number', ...repoArgs]
         });
 
         const bodyFile = writeTempFile(args.body, 'pr-body');
@@ -91,7 +99,7 @@ export const createPullRequest = {
                 const prNumber = String(existingPRs[0].number);
                 await execCommand.execute({
                     commandName: 'gh',
-                    commandArgs: ['pr', 'edit', prNumber, '--body-file', bodyFile]
+                    commandArgs: ['pr', 'edit', prNumber, '--body-file', bodyFile, ...repoArgs]
                 });
                 return `既存のPR #${prNumber} を更新しました`;
             }
@@ -102,7 +110,7 @@ export const createPullRequest = {
         try {
             const result = await execCommand.execute({
                 commandName: 'gh',
-                commandArgs: ['pr', 'create', '--title', args.title, '--body-file', bodyFile, '--base', args.base, '--head', args.head]
+                commandArgs: ['pr', 'create', '--title', args.title, '--body-file', bodyFile, '--base', args.base, '--head', args.head, ...repoArgs]
             });
             return `PRを作成しました: ${result}`;
         } finally {

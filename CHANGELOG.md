@@ -1,5 +1,9 @@
 # Change Log
 
+## 2026-04-30 (15)
+
+- `src/tools/webFetch.ts` の `await fetch(url, { redirect: 'error' })` について、`fetch` が Python の `requests.get()` / `httpx.get()` に相当する組み込み HTTP 関数であること、`redirect: 'error'` が許可リスト検証済みドメインから別ドメインへのリダイレクトによるセキュリティチェック回避を防ぐための設定であることを補足しました。
+
 ## 2026-04-30 (14)
 
 - `src/tools/webFetch.ts` の `targetUrl.hostname === domain || targetUrl.hostname.endsWith(...)` について、`===` が TypeScript の厳密等価演算子で Python の `==` に相当すること、TypeScript には `==`（型変換あり）と `===`（型変換なし）の2種類があり常に `===` を使うのがベストプラクティスであること、`endsWith` の先頭に `.` を付けることで "evil-example.com" の誤許可を防ぐ設計であることを補足しました。

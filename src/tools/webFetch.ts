@@ -100,6 +100,18 @@ async function webFetchExecute(args: Record<string, unknown>): Promise<string> {
     }
 
     // 実際のフェッチ処理
+    // fetch(url, { redirect: 'error' }) について:
+    //   fetch は HTTP リクエストを送る JavaScript/TypeScript の組み込み関数です。
+    //   Python の requests.get(url) や httpx.get(url) に相当します。
+    //   await を付けることでレスポンスが返るまで待ちます（Python の await client.get(url) と同じ）。
+    //
+    //   第2引数 { redirect: 'error' } はオプション設定オブジェクトです。
+    //   Python の requests.get(url, allow_redirects=False) に近いですが動作が異なります。
+    //     'follow'（デフォルト）: リダイレクトを自動的に追う
+    //     'error'             : リダイレクトが発生したらエラーを throw する
+    //     'manual'            : リダイレクトを追わずレスポンスをそのまま返す
+    //   'error' にしている理由: 許可リストで検証したドメインから別ドメインへリダイレクトされると
+    //   セキュリティチェックをすり抜けてしまうため、リダイレクト自体を禁止しています。
     const response = await fetch(url, { redirect: 'error' });
     if (!response.ok) {
         throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);

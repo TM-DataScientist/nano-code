@@ -43,6 +43,11 @@ function validateFilePath(filePath: string): void {
 function writeTempFile(content: string, prefix: string): string {
     // commit message をコマンドライン引数で直接渡さず、一時ファイル経由にします。
     // 改行を含むメッセージでも安全に扱いやすくなります。
+    // existsSync(WORKSPACE_ROOT) はワークスペースディレクトリが存在するか同期的に確認します。
+    // Python の os.path.exists(WORKSPACE_ROOT) や Path(WORKSPACE_ROOT).exists() に相当します。
+    // ! で反転しているため「存在しない場合」にブロックの中へ入ります。
+    // 存在しない場合は mkdirSync で作成します。{ recursive: true } は途中の親ディレクトリも
+    // まとめて作る指定で、Python の Path(...).mkdir(parents=True, exist_ok=True) に近いです。
     if (!existsSync(WORKSPACE_ROOT)) {
         mkdirSync(WORKSPACE_ROOT, { recursive: true });
     }

@@ -1,5 +1,9 @@
 # Change Log
 
+## 2026-04-30 (5)
+
+- `src/tools/git.ts` の `writeTempFile` 内の `if (!existsSync(WORKSPACE_ROOT))` について、`existsSync` が Python の `os.path.exists()` に相当する同期的な存在確認であること、`!` で反転して「存在しない場合のみ」ディレクトリを作成する処理であること、`mkdirSync` の `{ recursive: true }` が Python の `Path(...).mkdir(parents=True, exist_ok=True)` に近いことを補足しました。
+
 ## 2026-04-30 (4)
 
 - `src/tools/git.ts` の `function validateBranchName(name: string): void` について、`: void` が「値を返さない」という戻り値の型宣言であり、Python の `-> None` に対応することを補足しました。検証成功時は何も返さず終了し、失敗時は `throw` でエラーを投げる設計であること、`void` を明示することで呼び出し元が戻り値を使おうとするとコンパイルエラーになる点も追記しました。

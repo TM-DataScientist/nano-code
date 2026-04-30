@@ -44,6 +44,19 @@ async function webFetchExecute(args: Record<string, unknown>): Promise<string> {
     const url = args.url as string;
 
     // URLのパース（バリデーション含む）
+    // let targetUrl: URL; について:
+    //   let は再代入可能な変数宣言です（const は再代入不可）。Python の通常の変数代入に相当します。
+    //   : URL は変数の型注釈で、Python の targetUrl: urllib.parse.ParseResult に近いです。
+    //   try ブロックの外で宣言して内側で代入しているのは、後続コードでも targetUrl を参照するためです。
+    //
+    // new URL(url) について:
+    //   URL は JavaScript/TypeScript の組み込みクラスで、URL 文字列を解析してオブジェクトに変換します。
+    //   Python の urllib.parse.urlparse(url) や from urllib.parse import urlparse; urlparse(url) に相当します。
+    //   new はクラスのインスタンスを生成するキーワードです。Python の URL(url)（コンストラクタ呼び出し）と同じです。
+    //   url が不正な形式（例: "not-a-url"）の場合、例外を throw するためバリデーションを兼ねています。
+    //   パース後は targetUrl.hostname でホスト名、targetUrl.pathname でパスなどを取得できます。
+    //   例: new URL("https://api.example.com/path")
+    //       → hostname: "api.example.com", pathname: "/path", protocol: "https:"
     let targetUrl: URL;
     try {
         targetUrl = new URL(url);

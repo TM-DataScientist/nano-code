@@ -1,5 +1,9 @@
 # Change Log
 
+## 2026-04-30 (13)
+
+- `src/tools/webFetch.ts` の `targetUrl = new URL(url)` について、`URL` が Python の `urllib.parse.urlparse()` に相当する組み込みクラスであること、`new` がコンストラクタ呼び出しのキーワードであること、不正な URL 形式のとき例外を throw するためバリデーションを兼ねること、`let` が再代入可能な変数宣言で try 外で宣言して後続コードでも参照できる設計であることを補足しました。
+
 ## 2026-04-30 (12)
 
 - `src/tools/webFetch.ts` の `config.allowedDomains.some(domain => ...)` について、`.some()` が Python の `any(condition(d) for d in ...)` に対応すること、アロー関数が Python の `lambda` に相当すること、`endsWith` によるサブドメイン判定、`||` が Python の `or` に対応することを補足しました。

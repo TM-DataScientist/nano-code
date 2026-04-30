@@ -1,5 +1,9 @@
 # Change Log
 
+## 2026-04-30 (8)
+
+- `src/tools/github.ts` の `JSON.parse(listResult || '[]')` について、`JSON.parse` が Python の `json.loads()` に相当すること、`||` が Python の `or` に近いフォールバック演算子であること、`gh` コマンドが空を返した場合も `'[]'` を渡すことで安全に空配列を返す設計であることを補足しました。
+
 ## 2026-04-30 (7)
 
 - `src/tools/git.ts` の `createBranch` の `execute: async (args: { branchName: string }) => {` について、`execute` がツール実行時に Agent から呼ばれる非同期関数であること、`async` が Python の `async def` に対応すること、`args: { branchName: string }` が Python の TypedDict に近い引数の型注釈であること、`validateBranchName` が検証専用の `void` 関数で問題があれば `throw` する設計であることを補足しました。

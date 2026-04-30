@@ -94,6 +94,11 @@ export const createPullRequest = {
 
         try {
             // gh の JSON 出力を JavaScript オブジェクトへ変換します。
+            // JSON.parse は JSON 文字列を JavaScript オブジェクト（配列や辞書）に変換する組み込み関数です。
+            // Python の json.loads(...) に相当します。
+            // listResult || '[]' は「listResult が空文字・null・undefined のときは '[]' を使う」フォールバックです。
+            // Python の listResult or '[]' に近く、gh コマンドが何も返さなかった場合でも
+            // JSON.parse が空配列 [] を返すようにして、後続の Array.isArray チェックを安全に通します。
             const existingPRs = JSON.parse(listResult || '[]');
             if (Array.isArray(existingPRs) && existingPRs.length > 0) {
                 const prNumber = String(existingPRs[0].number);

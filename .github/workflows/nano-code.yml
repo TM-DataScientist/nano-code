@@ -89,5 +89,9 @@ jobs:
           ISSUE_NUMBER: ${{ github.event.issue.number }}
           GITHUB_REPO_OWNER: ${{ github.repository_owner }}
           GITHUB_REPO_NAME: ${{ github.event.repository.name }}
+          # GH_REPO は gh CLI が参照するデフォルトリポジトリを上書きする公式の環境変数です。
+          # フォーク上で gh pr create を実行すると Fork元（upstream）へ PR が飛ぶ gh の仕様を防ぐため、
+          # 自分のフォーク（OWNER/NAME）を明示的に固定しています。
+          GH_REPO: ${{ github.repository_owner }}/${{ github.event.repository.name }}
         # --yolo フラグを付けることでツール実行の都度確認をスキップし、CI 環境で自動実行できるようにします。
         run: bun run bin/cli.ts --yolo

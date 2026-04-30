@@ -1,5 +1,11 @@
 # Change Log
 
+## 2026-04-30 (3)
+
+- `.github/workflows/nano-code.yml` の "Nano Code エージェントを実行" ステップの `env` に `GH_REPO` を追加しました。
+  - `gh` CLI はフォーク上でデフォルトで upstream に PR を送る仕様のため、公式の環境変数 `GH_REPO` に自分のフォーク（`github.repository_owner/github.event.repository.name`）を設定することで、ワークフロー内の全 `gh` コマンドが Fork 元ではなく自分のフォークを対象にするよう固定しています。
+  - ローカルターミナルで同様に固定したい場合は `export GH_REPO=TM-DataScientist/nano-code` をシェルプロファイル（`~/.bashrc` など）に追記してください。
+
 ## 2026-04-30 (2)
 
 - `src/tools/github.ts` の `createPullRequest` を修正し、Fork 元（upstream）ではなく自分のフォークだけに PR を作成・操作できるようにしました。

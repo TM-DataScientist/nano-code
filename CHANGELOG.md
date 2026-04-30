@@ -1,5 +1,9 @@
 # Change Log
 
+## 2026-04-30
+
+- `.github/workflows/nano-code.yml` の全セクションに Python 開発者向けコメントを追加しました。`on:`（イベントトリガー）、`permissions:`（最小権限の原則）、`if:`（実行条件と`fromJSON`/`contains`）、`runs-on:`、`env:`（`secrets`/`vars`の違い）、`--yolo`フラグの意味を補足しました。
+
 ## 2026-04-29
 
 - `bin/cli.ts` の `approvalFunc` に渡す `async (name) => { ... }` について、`name` はその場で代入する変数ではなく、Agent 側が `approvalFunc('readFile')` のように呼び出したときの引数を受け取る仮引数であることを補足しました。

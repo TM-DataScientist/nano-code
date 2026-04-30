@@ -1,54 +1,93 @@
 name: Nano Code
 
+# on: はワークフローを起動するトリガーの定義です。
+# Python の「イベントハンドラーを登録する」感覚に近く、ここに書いたイベントが発生したときに下の jobs が実行されます。
 on:
+  # workflow_dispatch: GitHub の UI から手動で実行するトリガーです。
+  # 「Run workflow」ボタンを押すと inputs に定義したフォームが表示されます。
   workflow_dispatch:
     inputs:
       task:
         description: 'エージェントに実行させるタスク'
         required: false
         default: 'calculator.ts の関数にテストを追加してください'
+  # issues: GitHub の Issue イベントを受け取るトリガーです。
+  # types: [opened] は「新しい Issue が作成されたとき」だけ反応することを意味します。
   issues:
     types: [opened]
 
+# permissions: このワークフロー全体に与える権限の上限です。
+# {} は「何も許可しない」という最も制限の強い設定で、
+# 実際に必要な権限は後の jobs レベルで最小限だけ付与します（最小権限の原則）。
 permissions: {}
 
 jobs:
   nano-code:
+    # if: このジョブを実行する条件です。Python の if 文に相当し、false のときはジョブをスキップします。
+    # 条件1: 手動実行（workflow_dispatch）のとき
+    # 条件2: Issue イベントかつ、Issue を作成したユーザーが OWNER / MEMBER / COLLABORATOR のとき
+    #        → 外部の一般ユーザーが Issue を立てても Agent が動かないようにするセキュリティ制限です。
+    # fromJSON(...) は JSON 文字列を配列に変換する関数、contains(arr, val) は arr に val が含まれるかを返す関数です。
     if: >
       github.event_name == 'workflow_dispatch' ||
       (github.event_name == 'issues' &&
        contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association))
+    # runs-on: ジョブを実行する仮想マシンの種類です。
+    # ubuntu-latest は GitHub が提供する最新の Ubuntu 環境で実行することを意味します。
     runs-on: ubuntu-latest
+    # permissions: このジョブに与える権限です。上の permissions: {} を上書きして必要最小限だけ付与します。
+    # contents: write    → コードをコミット・プッシュするために必要
+    # pull-requests: write → PR を作成・更新するために必要
+    # issues: write      → Issue にコメントするために必要
     permissions:
       contents: write
       pull-requests: write
       issues: write
+    # steps: ジョブ内で順番に実行する処理の一覧です。Python のスクリプトを上から順に実行するイメージです。
     steps:
+      # actions/checkout@v4 は GitHub 公式のアクションで、リポジトリのコードをランナーへ取得します。
+      # Python の git clone に相当します。
       - name: リポジトリをチェックアウト
         uses: actions/checkout@v4
 
+      # oven-sh/setup-bun@v2 は Bun（TypeScript/JavaScript ランタイム）をインストールするアクションです。
+      # Python の「pyenv で Python バージョンをセットアップする」感覚に近いです。
       - name: Bun をセットアップ
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
 
+      # bun install は package.json に記載された依存パッケージをインストールします。
+      # Python の pip install -r requirements.txt に相当します。
       - name: 依存パッケージをインストール
         run: bun install
 
+      # Agent がコミットするときに使う Git のユーザー名とメールアドレスを設定します。
+      # ローカルで git config を実行するのと同じです。
       - name: Git ユーザーを設定
         run: |
           git config user.name "nano-code[bot]"
           git config user.email "nano-code[bot]@users.noreply.github.com"
 
       - name: Nano Code エージェントを実行
+        # env: このステップで使う環境変数を定義します。Python の os.environ に相当します。
+        # ${{ secrets.XXX }} はリポジトリの Secrets（暗号化された秘密情報）を参照します。
+        # ${{ vars.XXX }}    はリポジトリの Variables（平文の設定値）を参照します。
         env:
+          # GITHUB_TOKEN は GitHub が自動で発行するトークンで、PR作成・Issue操作などに使います。
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # LLM_PROVIDER / LLM_MODEL / LLM_API_KEY はリポジトリ設定で切り替えられるLLM接続情報です。
           LLM_PROVIDER: ${{ vars.LLM_PROVIDER }}
           LLM_MODEL: ${{ vars.LLM_MODEL }}
           LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+          # ISSUE_BODY: 手動実行（workflow_dispatch）のときに入力されたタスク文字列です。
           ISSUE_BODY: ${{ inputs.task }}
+          # ISSUE_TEXT: Issue イベントのときに Issue の本文が入ります。
           ISSUE_TEXT: ${{ github.event.issue.body }}
+          # ISSUE_NUMBER / GITHUB_REPO_OWNER / GITHUB_REPO_NAME は
+          # Agent が PR や Issue コメントを投稿する先を特定するために使います。
           ISSUE_NUMBER: ${{ github.event.issue.number }}
           GITHUB_REPO_OWNER: ${{ github.repository_owner }}
           GITHUB_REPO_NAME: ${{ github.event.repository.name }}
+        # --yolo フラグを付けることでツール実行の都度確認をスキップし、CI 環境で自動実行できるようにします。
         run: bun run bin/cli.ts --yolo

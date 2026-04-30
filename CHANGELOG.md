@@ -1,5 +1,9 @@
 # Change Log
 
+## 2026-04-30 (12)
+
+- `src/tools/webFetch.ts` の `config.allowedDomains.some(domain => ...)` について、`.some()` が Python の `any(condition(d) for d in ...)` に対応すること、アロー関数が Python の `lambda` に相当すること、`endsWith` によるサブドメイン判定、`||` が Python の `or` に対応することを補足しました。
+
 ## 2026-04-30 (11)
 
 - `src/tools/webFetch.ts` の `const url = args.url as string` について、`as string` が Python にない概念の型アサーション（コンパイラへの宣言）であり実行時の変換は行わないこと、`unknown` 型の値を `string` として扱わせる意図であること、実際の値が文字列でなくても TypeScript はエラーを出さない点を補足しました。

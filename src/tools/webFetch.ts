@@ -52,6 +52,21 @@ async function webFetchExecute(args: Record<string, unknown>): Promise<string> {
     }
 
     // ガードレール: 許可リストのチェック
+    // config.allowedDomains.some(domain => ...) について:
+    //   .some() は配列の要素を1つずつ試し、コールバックが一度でも true を返したら true を返す高階関数です。
+    //   Python の any(condition(d) for d in config.allowed_domains) に対応します。
+    //   全要素が false なら false を返します（Python の any() と同じ挙動）。
+    //
+    //   domain => ... はアロー関数（コールバック）で、Python の lambda domain: ... に相当します。
+    //   配列の各要素が domain に順番に渡され、条件を満たすかどうかを評価します。
+    //
+    //   targetUrl.hostname === domain
+    //     完全一致チェック。例: "example.com" === "example.com" → true
+    //   targetUrl.hostname.endsWith(`.${domain}`)
+    //     サブドメインチェック。`.${domain}` はテンプレートリテラルで ".example.com" を生成します。
+    //     例: "api.example.com".endsWith(".example.com") → true
+    //     Python の "api.example.com".endswith(".example.com") と同じです。
+    //   || は Python の or に対応し、どちらかが true なら true を返します。
     const isAllowed = config.allowedDomains.some(domain =>
         // 完全一致またはサブドメインだけを許可します。
         targetUrl.hostname === domain || targetUrl.hostname.endsWith(`.${domain}`)

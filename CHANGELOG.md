@@ -1,5 +1,9 @@
 # Change Log
 
+## 2026-04-30 (4)
+
+- `src/tools/git.ts` の `function validateBranchName(name: string): void` について、`: void` が「値を返さない」という戻り値の型宣言であり、Python の `-> None` に対応することを補足しました。検証成功時は何も返さず終了し、失敗時は `throw` でエラーを投げる設計であること、`void` を明示することで呼び出し元が戻り値を使おうとするとコンパイルエラーになる点も追記しました。
+
 ## 2026-04-30 (3)
 
 - `.github/workflows/nano-code.yml` の "Nano Code エージェントを実行" ステップの `env` に `GH_REPO` を追加しました。

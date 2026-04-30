@@ -4,6 +4,10 @@ import { execCommand } from './execCommand';
 
 const WORKSPACE_ROOT = join(process.cwd(), 'workspace');
 
+// `: void` は「この関数は値を返さない」という戻り値の型宣言です。
+// Python の `def validate(...) -> None:` に対応します。
+// この関数は検証に成功すれば何も返さず終了し、失敗すれば throw でエラーを投げます。
+// TypeScript では void を書くことで呼び出し元が戻り値を使おうとするとコンパイルエラーになります。
 function validateBranchName(name: string): void {
     // Gitコマンドへ渡す文字列なので、長さ・先頭文字・使える文字を事前に制限します。
     if (!name || name.length > 120) {

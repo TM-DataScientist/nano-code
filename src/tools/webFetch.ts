@@ -2,6 +2,17 @@
 import type { Tool } from '../types';
 import { config } from '../config';
 
+// async function webFetchExecute(args: Record<string, unknown>): Promise<string> について
+// async     : 非同期関数の宣言。Python の async def に対応します。
+// args      : 引数名。
+// Record<string, unknown>
+//           : 「キーが string、値が unknown（型不明）の辞書」を表す型です。
+//             Python の dict[str, Any] に近く、ツールの汎用インターフェースに合わせた型です。
+//             unknown は any より厳しく、使う前に型チェックが必要です（8行目で as string しています）。
+// Promise<string>
+//           : この関数が非同期に string を返すことを示す戻り値の型です。
+//             Python の async def f() -> str: に対応します。
+//             await すると string が取り出せます。
 async function webFetchExecute(args: Record<string, unknown>): Promise<string> {
     // Tool の execute は汎用的に Record<string, unknown> を受けるため、
     // ここで url を string として取り出しています。本番では typeof チェックを追加するとさらに安全です。

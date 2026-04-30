@@ -1,5 +1,9 @@
 # Change Log
 
+## 2026-04-30 (9)
+
+- `src/tools/webFetch.ts` の `async function webFetchExecute(args: Record<string, unknown>): Promise<string>` について、`async` が Python の `async def` に対応すること、`Record<string, unknown>` が Python の `dict[str, Any]` に近いが `unknown` は `any` より厳しく使用前に型チェックが必要なこと、`Promise<string>` が Python の `async def f() -> str:` に対応し `await` で `string` を取り出せることを補足しました。なお対象ファイルは `github.ts` ではなく `webFetch.ts` に存在します。
+
 ## 2026-04-30 (8)
 
 - `src/tools/github.ts` の `JSON.parse(listResult || '[]')` について、`JSON.parse` が Python の `json.loads()` に相当すること、`||` が Python の `or` に近いフォールバック演算子であること、`gh` コマンドが空を返した場合も `'[]'` を渡すことで安全に空配列を返す設計であることを補足しました。

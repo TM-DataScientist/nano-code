@@ -154,6 +154,7 @@ ${issueText}
 
 - 作業を始める前に、必ずTODOリストを作成する。
 - 次の順番で作業する: Issue理解 → ファイル読込 → 修正 → テスト → Gitコミット/プッシュ → PR作成 → Issueへ結果コメント。
+- テストが通っても、必ず続けて createBranch → commitChanges → pushBranch → createPullRequest を実行すること。PRの作成なしに作業を完了と見なしてはならない。
 - レポートは日本語で行うこと。`;
 
     const agent = new Agent({

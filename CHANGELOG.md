@@ -1,5 +1,9 @@
 # Change Log
 
+## 2026-05-01 (11)
+
+- `src/tools/execCommandSandbox.ts` の `resolve(stdout + (stderr ? \`\n(stderr: ${stderr.trim()})\` : ''))` について、三項演算子 `(条件 ? 真 : 偽)` が Python の `(左辺 if 条件 else 右辺)` に対応すること、`stderr` が空文字のとき falsy となり `''` が選ばれること、テンプレートリテラル `` `\n(stderr: ${stderr.trim()})` `` が Python の `f"\n(stderr: {stderr.strip()})"` に相当すること、`.trim()` が Python の `.strip()` と同じく前後の空白・改行を除去すること、まとめると「stderr が空なら stdout だけ・内容があれば末尾に stderr を追記して返す」設計であることを補足しました。
+
 ## 2026-05-01 (10)
 
 - `src/tools/execCommandSandbox.ts` の `if (process.platform === 'linux' && config.sandbox)` について、`process.platform` が Python の `sys.platform` に相当すること、`'linux'` / `'darwin'` / `'win32'` の値、`&&` が Python の `and` に対応すること、bubblewrap が Linux 専用のため OS チェックが必要な理由、`config.sandbox` が boolean の truthy 判定であることを補足しました。

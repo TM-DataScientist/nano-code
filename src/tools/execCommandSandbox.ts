@@ -207,6 +207,26 @@ async function execCommandSandboxExecute(
             }
 
             if (code === 0) {
+                // resolve(stdout + (stderr ? `\n(stderr: ${stderr.trim()})` : '')) について:
+                //
+                // 全体の構造: stdout + 三項演算子
+                //   正常終了（code === 0）時に Promise を完了させ呼び出し元へ返す値を組み立てます。
+                //
+                // (stderr ? ... : '') は三項演算子です。
+                //   stderr が truthy（空文字でない）なら左辺、falsy（空文字）なら右辺を返します。
+                //   Python の (left if stderr else '') に対応します。
+                //   空文字列は TypeScript でも Python でも falsy なので、
+                //   stderr に出力があるときだけ末尾に追記します。
+                //
+                // `\n(stderr: ${stderr.trim()})` はテンプレートリテラルです。
+                //   Python の f"\n(stderr: {stderr.strip()})" に相当します。
+                //   .trim() は文字列前後の空白・改行を除去します。Python の .strip() と同じです。
+                //
+                // stdout + (...) は文字列の結合です。Python の stdout + (...) と同じです。
+                //
+                // まとめると:
+                //   stderr が空 → stdout だけを返す
+                //   stderr に内容あり → stdout + "\n(stderr: ...内容...)" を返す
                 resolve(stdout + (stderr ? `\n(stderr: ${stderr.trim()})` : ''));
             } else {
                 reject(new Error(`コマンドが異常終了しました (exit code: ${code})\n${stderr}`));

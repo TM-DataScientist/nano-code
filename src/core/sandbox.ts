@@ -3,6 +3,23 @@ import { spawn } from 'child_process';
 
 // SandboxOptions は、サンドボックス内でコマンドを動かすときの任意設定です。
 // `cwd?: string` の `?` は「指定してもしなくてもよい」ことを表します。
+//
+// export interface SandboxOptions について:
+//   interface はオブジェクトの「型の設計図」を定義するキーワードです。
+//   Python の TypedDict や dataclass に近い概念です。
+//   export を付けることで他ファイルから import して使えるようになります。
+//
+//   各プロパティの ? は「省略可能（Optional）」を意味します。
+//   Python の型ヒントで Optional[str] や str | None と書くのに相当します。
+//     cwd?: string         → 省略可能な文字列。省略時は undefined になります。
+//                            Python の def run(cwd: str | None = None): に近い。
+//     allowNetwork?: boolean → 省略可能な真偽値（true/false）。
+//                              Python の bool | None に相当します。
+//     env?: Record<string, string> → 省略可能な「キーも値も string の辞書」。
+//                                    Python の dict[str, str] | None に相当します。
+//
+//   interface は実行時には存在しません（TypeScript のコンパイル時のみ使われる型情報です）。
+//   Python の TypedDict と同様に、実際のオブジェクトの形を制約するための宣言です。
 export interface SandboxOptions {
   cwd?: string;                 // 作業ディレクトリ
   allowNetwork?: boolean;       // ネットワークアクセスの許可

@@ -1,5 +1,9 @@
 # Change Log
 
+## 2026-05-01
+
+- `src/core/sandbox.ts` の `export interface SandboxOptions` について、`interface` が Python の TypedDict / dataclass に近いオブジェクトの型設計図であること、`export` で他ファイルから利用可能になること、`?` が Python の `Optional` / `str | None` に相当する省略可能プロパティであること、`Record<string, string>` が Python の `dict[str, str]` に相当すること、`interface` はコンパイル時のみ存在し実行時には消える点を補足しました。なお対象ファイルは `webFetch.ts` ではなく `sandbox.ts` に存在します。
+
 ## 2026-04-30 (15)
 
 - `src/tools/webFetch.ts` の `await fetch(url, { redirect: 'error' })` について、`fetch` が Python の `requests.get()` / `httpx.get()` に相当する組み込み HTTP 関数であること、`redirect: 'error'` が許可リスト検証済みドメインから別ドメインへのリダイレクトによるセキュリティチェック回避を防ぐための設定であることを補足しました。

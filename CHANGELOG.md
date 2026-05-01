@@ -1,5 +1,9 @@
 # Change Log
 
+## 2026-05-01 (4)
+
+- `src/core/sandbox.ts` の `child.stdout.on('data', d => stdout += d.toString())` について、`child.stdout` が Python の `proc.stdout` 相当のストリームであること、`.on('data', ...)` がデータ到着ごとに発火するイベントリスナーであること、`d` が Buffer（Python の `bytes`）であり`.toString()` が `.decode()` 相当であること、チャンク単位で逐次受信して追記する設計が Python の `capture_output=True` のストリーミング版に相当することを補足しました。
+
 ## 2026-05-01 (3)
 
 - `src/core/sandbox.ts` の `for (const [key, value] of Object.entries(envVars))` について、`Object.entries()` が Python の `dict.items()` に対応すること、`[key, value]` の分割代入が Python の `for key, value in d.items():` に相当すること、`const` がループ内での再代入を禁止する宣言であることを補足しました。

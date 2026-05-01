@@ -128,6 +128,22 @@ export class Sandbox {
       let stdout = '';
       let stderr = '';
 
+      // child.stdout.on('data', d => stdout += d.toString()) について:
+      // child.stdout はプロセスの標準出力を表すストリーム（データの流れ）です。
+      // Python の proc.stdout に相当します。
+      //
+      // .on('data', コールバック) はイベントリスナーの登録です。
+      // 'data' イベントはプロセスが出力を書き出すたびに発火します。
+      // Python の proc.stdout.read() と違い、データが届くたびにチャンク（断片）で受け取ります。
+      //
+      // d => stdout += d.toString() はアロー関数（コールバック）です。
+      //   d        : 受け取ったチャンク（Buffer 型。Python の bytes に相当）
+      //   .toString(): Buffer を文字列に変換。Python の .decode() に相当
+      //   stdout +=: 受け取るたびに文字列に追記。Python の stdout += d.decode() と同じ
+      //
+      // まとめると「標準出力のデータが届くたびに文字列として stdout に追記する」処理です。
+      // Python の subprocess.run(..., capture_output=True).stdout.decode() を
+      // ストリーミング（逐次受信）で実装したものに相当します。
       child.stdout.on('data', d => stdout += d.toString());
       child.stderr.on('data', d => stderr += d.toString());
 

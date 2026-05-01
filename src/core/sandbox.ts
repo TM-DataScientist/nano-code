@@ -147,6 +147,25 @@ export class Sandbox {
       child.stdout.on('data', d => stdout += d.toString());
       child.stderr.on('data', d => stderr += d.toString());
 
+      // child.on('close', (code) => { resolve({...}) }) について:
+      // 'close' イベントはプロセスが終了したときに発火します。
+      // Python の proc.wait() が完了した瞬間に相当します。
+      //
+      // (code) はプロセスの終了コードです。
+      //   0      : 正常終了（Python の returncode == 0 と同じ）
+      //   1以上  : エラー終了
+      //   null   : シグナルで強制終了された場合（SIGKILL など）
+      //   Python の proc.returncode に相当しますが、null になり得る点が異なります。
+      //
+      // resolve({...}) で Promise を完了させ、await した呼び出し元に結果を返します。
+      //
+      // { stdout, stderr, exitCode: code ?? -1 } について:
+      //   { stdout, stderr } は { stdout: stdout, stderr: stderr } の省略記法です。
+      //   Python の {"stdout": stdout, "stderr": stderr} に相当します。
+      //   exitCode: code ?? -1 の ?? は「Null 合体演算子」です。
+      //     code が null または undefined のとき -1 を使います。
+      //     Python の code if code is not None else -1 に相当します。
+      //     シグナル終了で code が null になる場合のフォールバックです。
       child.on('close', (code) => {
         resolve({
           stdout,

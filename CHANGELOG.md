@@ -1,5 +1,9 @@
 # Change Log
 
+## 2026-05-01 (5)
+
+- `src/core/sandbox.ts` の `child.on('close', (code) => { resolve({stdout, stderr, exitCode: code ?? -1}) })` について、`'close'` イベントがプロセス終了時に発火し Python の `proc.wait()` 完了に相当すること、`code` が終了コード（null はシグナル終了）で Python の `proc.returncode` に対応すること、`{ stdout, stderr }` がプロパティ名省略記法であること、`??`（Null合体演算子）が Python の `code if code is not None else -1` に相当することを補足しました。
+
 ## 2026-05-01 (4)
 
 - `src/core/sandbox.ts` の `child.stdout.on('data', d => stdout += d.toString())` について、`child.stdout` が Python の `proc.stdout` 相当のストリームであること、`.on('data', ...)` がデータ到着ごとに発火するイベントリスナーであること、`d` が Buffer（Python の `bytes`）であり`.toString()` が `.decode()` 相当であること、チャンク単位で逐次受信して追記する設計が Python の `capture_output=True` のストリーミング版に相当することを補足しました。

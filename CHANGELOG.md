@@ -1,5 +1,9 @@
 # Change Log
 
+## 2026-05-01 (7)
+
+- `src/tools/execCommandSandbox.ts` の `const dangerousChars = /[;&\`$]/` について、`/パターン/` が Python の `re.compile(r'...')` に相当する正規表現リテラルでインポート不要であること、`[;&\`$]` が文字クラスでシェルメタ文字（`;` `&` バックティック `$`）のいずれかにマッチすること、各メタ文字の危険性（コマンド区切り・バックグラウンド実行・コマンド置換・変数展開）、`.test()` が Python の `bool(re.search(...))` に相当することを補足しました。
+
 ## 2026-05-01 (6)
 
 - `src/tools/execCommandSandbox.ts` の `Record<string, unknown>` について、`Record<K, V>` が Python の `dict[str, Any]` に相当するユーティリティ型であること、`unknown` が `any` より安全で使用前に型確認が必要なこと、Agent からの引数が実行時まで形が決まらないため汎用型で受け取り `typeof` チェックで安全に絞り込む設計であることを補足しました。

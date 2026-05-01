@@ -50,6 +50,21 @@ async function execCommandSandboxExecute(
 
     if (typeof input.command === 'string') {
         const command = input.command;
+        // /[;&`$]/ は正規表現リテラルです。Python の re.compile(r'[;&`$]') に相当します。
+        // TypeScript/JavaScript では / と / で囲むだけで正規表現オブジェクトになります。
+        // Python の re.compile(...) や re.search(...) のようにインポートは不要です。
+        //
+        // [;&`$] は文字クラスで「; か & か ` か $ のいずれか1文字」にマッチします。
+        // Python の re.compile(r'[;&`$]') と同じ意味です。
+        // これらはシェルで特別な意味を持つ「メタ文字」です：
+        //   ;  : コマンドの区切り（例: rm -rf / ; echo done）
+        //   &  : バックグラウンド実行（例: malicious_cmd &）
+        //   `  : コマンド置換（例: `rm -rf /`）
+        //   $  : 変数展開（例: $HOME や $(rm -rf /)）
+        //
+        // .test(command) は文字列が正規表現にマッチするか boolean で返します。
+        // Python の bool(re.search(pattern, command)) に相当します。
+        // マッチした（危険文字が含まれる）場合は throw でエラーにしてコマンド実行を拒否します。
         const dangerousChars = /[;&`$]/;
         if (dangerousChars.test(command)) {
             throw new Error('シェルメタ文字を含むコマンドは実行できません');

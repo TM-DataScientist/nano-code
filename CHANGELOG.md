@@ -1,5 +1,9 @@
 # Change Log
 
+## 2026-05-01 (6)
+
+- `src/tools/execCommandSandbox.ts` の `Record<string, unknown>` について、`Record<K, V>` が Python の `dict[str, Any]` に相当するユーティリティ型であること、`unknown` が `any` より安全で使用前に型確認が必要なこと、Agent からの引数が実行時まで形が決まらないため汎用型で受け取り `typeof` チェックで安全に絞り込む設計であることを補足しました。
+
 ## 2026-05-01 (5)
 
 - `src/core/sandbox.ts` の `child.on('close', (code) => { resolve({stdout, stderr, exitCode: code ?? -1}) })` について、`'close'` イベントがプロセス終了時に発火し Python の `proc.wait()` 完了に相当すること、`code` が終了コード（null はシグナル終了）で Python の `proc.returncode` に対応すること、`{ stdout, stderr }` がプロパティ名省略記法であること、`??`（Null合体演算子）が Python の `code if code is not None else -1` に相当することを補足しました。

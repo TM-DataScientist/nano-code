@@ -23,6 +23,22 @@ type ExecCommandInput = {
     commandArgs?: unknown;
 };
 
+// args: Record<string, unknown> について:
+//   Record<K, V> は「キーの型が K、値の型が V のオブジェクト（辞書）」を表す組み込みユーティリティ型です。
+//   Python の dict[str, Any] に相当しますが、V に unknown を使うことで any より安全になります。
+//
+//   unknown vs any の違い:
+//     any     : 型チェックを完全に無効化。どんな操作もエラーにならない（危険）。
+//               Python の Any と同じ感覚で使えるが、TypeScript の恩恵が得られない。
+//     unknown : 「型が不明」という状態。使う前に typeof や instanceof で型を確認しないと
+//               コンパイルエラーになる（安全）。
+//               Python の object 型（すべての型の基底クラス）に近い概念です。
+//
+//   なぜ Record<string, unknown> を使うか:
+//     Agent からツールに渡される引数の形は実行時まで決まらないため、
+//     汎用的に受け取れる Record<string, unknown> で受け取ります。
+//     その後 35行目の typeof input.command === 'string' のように
+//     型を確認してから安全に使う設計になっています。
 async function execCommandSandboxExecute(
     args: Record<string, unknown>
 ): Promise<string> {

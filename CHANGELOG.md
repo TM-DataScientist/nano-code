@@ -1,5 +1,9 @@
 # Change Log
 
+## 2026-05-01 (3)
+
+- `src/core/sandbox.ts` の `for (const [key, value] of Object.entries(envVars))` について、`Object.entries()` が Python の `dict.items()` に対応すること、`[key, value]` の分割代入が Python の `for key, value in d.items():` に相当すること、`const` がループ内での再代入を禁止する宣言であることを補足しました。
+
 ## 2026-05-01 (2)
 
 - `src/core/sandbox.ts` の `return new Promise((resolve) => { ... })` について、Promise がコールバック API を await できる形に変換するラッパーであること、`resolve` が Python の `future.set_result()` に相当すること、`spawn` のようなイベント駆動APIを直接 await できないため new Promise で包む必要があること、Python の `asyncio.Future` との対応を補足しました。

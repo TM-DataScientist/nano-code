@@ -71,6 +71,17 @@ export class Sandbox {
       HOME: '/tmp',
       ...options.env,
     };
+    // for (const [key, value] of Object.entries(envVars)) について:
+    //   Object.entries(obj) はオブジェクト（辞書）の [キー, 値] ペアの配列を返します。
+    //   Python の dict.items() に対応します。
+    //     例: Object.entries({ PATH: '/bin', HOME: '/tmp' })
+    //         → [['PATH', '/bin'], ['HOME', '/tmp']]
+    //
+    //   for (const [key, value] of ...) は分割代入（Destructuring）を使ったループです。
+    //   配列の各要素 ['PATH', '/bin'] を [key, value] に分解しながら受け取ります。
+    //   Python の for key, value in env_vars.items(): に相当します。
+    //
+    //   const はループ内で key / value を再代入しない宣言です。Python に同じ制約はありません。
     for (const [key, value] of Object.entries(envVars)) {
       if (value !== undefined) {
         bwrapArgs.push('--setenv', key, value);

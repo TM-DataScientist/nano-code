@@ -86,6 +86,28 @@ export class Sandbox {
     bwrapArgs.push('--', command, ...args);
 
     // プロセス生成と結果取得
+    // return new Promise((resolve) => { ... }) について:
+    //   Promise はコールバックAPI（spawn のようなイベント駆動の非同期処理）を
+    //   await で待てる形に変換するためのラッパーです。
+    //   Python の asyncio.Future や loop.run_in_executor() に近い概念です。
+    //
+    //   new Promise((resolve) => { ... }) の構造:
+    //     - resolve は「処理が完了したときに結果を渡す関数」です。
+    //       Python の future.set_result(value) に相当します。
+    //     - resolve(値) を呼ぶと、この Promise が「完了」状態になり、
+    //       await した呼び出し元に値が返ります。
+    //     - reject（今回は省略）を呼ぶとエラーとして伝搬します。
+    //
+    //   なぜ new Promise が必要か:
+    //     spawn はコールバック（.on('close', ...)）ベースのAPIで、
+    //     async/await では直接 await できません。
+    //     new Promise で包むことで spawn の完了を await できるようになります。
+    //
+    //   Python で書くなら asyncio.Future を使う場合に相当:
+    //     loop = asyncio.get_event_loop()
+    //     future = loop.create_future()
+    //     # コールバック内で future.set_result(value) を呼ぶ
+    //     result = await future
     return new Promise((resolve) => {
       // spawn はプロセスを開始し、stdout/stderr の data イベントで出力を少しずつ受け取ります。
       const child = spawn('bwrap', bwrapArgs, {

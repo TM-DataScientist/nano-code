@@ -1,5 +1,9 @@
 # Change Log
 
+## 2026-05-01 (2)
+
+- `src/core/sandbox.ts` の `return new Promise((resolve) => { ... })` について、Promise がコールバック API を await できる形に変換するラッパーであること、`resolve` が Python の `future.set_result()` に相当すること、`spawn` のようなイベント駆動APIを直接 await できないため new Promise で包む必要があること、Python の `asyncio.Future` との対応を補足しました。
+
 ## 2026-05-01
 
 - `src/core/sandbox.ts` の `export interface SandboxOptions` について、`interface` が Python の TypedDict / dataclass に近いオブジェクトの型設計図であること、`export` で他ファイルから利用可能になること、`?` が Python の `Optional` / `str | None` に相当する省略可能プロパティであること、`Record<string, string>` が Python の `dict[str, str]` に相当すること、`interface` はコンパイル時のみ存在し実行時には消える点を補足しました。なお対象ファイルは `webFetch.ts` ではなく `sandbox.ts` に存在します。

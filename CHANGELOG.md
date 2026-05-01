@@ -1,5 +1,9 @@
 # Change Log
 
+## 2026-05-01 (9)
+
+- `src/tools/execCommandSandbox.ts` の `if (Array.isArray(input.commandArgs))` について、`Array.isArray()` が Python の `isinstance(x, list)` に相当すること、`typeof []` が `'object'` を返すため配列判定に `typeof` が使えない理由、`.every((arg) => typeof arg === 'string')` が Python の `all(isinstance(arg, str) for arg in args)` に相当することを補足しました。
+
 ## 2026-05-01 (8)
 
 - `src/tools/execCommandSandbox.ts` の `if (dangerousChars.test(command))` について、`.test()` が true を返したとき `=== true` を明示しなくても if が実行される TypeScript の truthy 判定が Python の `if re.search(pattern, command):` と同じ感覚であることを補足しました。

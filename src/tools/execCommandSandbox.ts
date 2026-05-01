@@ -81,6 +81,21 @@ async function execCommandSandboxExecute(
         commandForCheck = command;
     } else if (typeof input.commandName === 'string') {
         commandName = input.commandName;
+        // Array.isArray(input.commandArgs) について:
+        // Array.isArray() は値が配列かどうかを判定する組み込み関数です。
+        // Python の isinstance(x, list) に相当します。
+        //
+        // なぜ typeof ではなく Array.isArray() を使うのか:
+        //   typeof [] === 'object' // true ← 配列も 'object' と判定される
+        //   Array.isArray([])      // true ← 配列かどうか正確に判定できる
+        //   typeof {} === 'object' // true ← オブジェクトも 'object' になってしまう
+        //   Array.isArray({})      // false ← オブジェクトは false
+        // input.commandArgs は unknown 型なので、配列として扱う前にこの確認が必要です。
+        //
+        // .every((arg) => typeof arg === 'string') について:
+        //   .every() は配列の全要素がコールバックの条件を満たすとき true を返します。
+        //   Python の all(isinstance(arg, str) for arg in args) に相当します。
+        //   ! で反転しているため「1つでも string でない要素があればエラー」を意味します。
         if (Array.isArray(input.commandArgs)) {
             if (!input.commandArgs.every((arg) => typeof arg === 'string')) {
                 throw new Error('commandArgs は文字列配列で指定してください');

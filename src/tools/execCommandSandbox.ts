@@ -66,6 +66,12 @@ async function execCommandSandboxExecute(
         // Python の bool(re.search(pattern, command)) に相当します。
         // マッチした（危険文字が含まれる）場合は throw でエラーにしてコマンド実行を拒否します。
         const dangerousChars = /[;&`$]/;
+        // if (dangerousChars.test(command)) について:
+        // .test(command) は command 文字列が正規表現にマッチするとき true を返します。
+        // TypeScript の if は Python と同じく「truthy な値」であれば実行されます。
+        // if (dangerousChars.test(command) === true) と書く必要はなく、
+        // if (dangerousChars.test(command)) だけで「マッチしたとき」を意味します。
+        // Python の if re.search(pattern, command): と同じ感覚です。
         if (dangerousChars.test(command)) {
             throw new Error('シェルメタ文字を含むコマンドは実行できません');
         }

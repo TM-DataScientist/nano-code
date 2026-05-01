@@ -1,5 +1,9 @@
 # Change Log
 
+## 2026-05-01 (8)
+
+- `src/tools/execCommandSandbox.ts` の `if (dangerousChars.test(command))` について、`.test()` が true を返したとき `=== true` を明示しなくても if が実行される TypeScript の truthy 判定が Python の `if re.search(pattern, command):` と同じ感覚であることを補足しました。
+
 ## 2026-05-01 (7)
 
 - `src/tools/execCommandSandbox.ts` の `const dangerousChars = /[;&\`$]/` について、`/パターン/` が Python の `re.compile(r'...')` に相当する正規表現リテラルでインポート不要であること、`[;&\`$]` が文字クラスでシェルメタ文字（`;` `&` バックティック `$`）のいずれかにマッチすること、各メタ文字の危険性（コマンド区切り・バックグラウンド実行・コマンド置換・変数展開）、`.test()` が Python の `bool(re.search(...))` に相当することを補足しました。

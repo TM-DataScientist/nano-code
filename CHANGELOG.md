@@ -1,5 +1,9 @@
 # Change Log
 
+## 2026-05-01 (10)
+
+- `src/tools/execCommandSandbox.ts` の `if (process.platform === 'linux' && config.sandbox)` について、`process.platform` が Python の `sys.platform` に相当すること、`'linux'` / `'darwin'` / `'win32'` の値、`&&` が Python の `and` に対応すること、bubblewrap が Linux 専用のため OS チェックが必要な理由、`config.sandbox` が boolean の truthy 判定であることを補足しました。
+
 ## 2026-05-01 (9)
 
 - `src/tools/execCommandSandbox.ts` の `if (Array.isArray(input.commandArgs))` について、`Array.isArray()` が Python の `isinstance(x, list)` に相当すること、`typeof []` が `'object'` を返すため配列判定に `typeof` が使えない理由、`.every((arg) => typeof arg === 'string')` が Python の `all(isinstance(arg, str) for arg in args)` に相当することを補足しました。

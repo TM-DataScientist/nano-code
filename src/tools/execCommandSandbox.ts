@@ -133,6 +133,25 @@ async function execCommandSandboxExecute(
     }
 
     // サンドボックス分岐
+    // if (process.platform === 'linux' && config.sandbox) について:
+    //
+    // process.platform は実行中の OS 名を表す Node.js の組み込み変数です。
+    // Python の sys.platform や platform.system() に相当します。
+    //   'linux'  : Linux
+    //   'darwin' : macOS
+    //   'win32'  : Windows（64bit でも 'win32'）
+    //
+    // && は Python の and に対応する論理演算子です。
+    // 両方の条件が true のときだけブロックに入ります。
+    //   条件1: process.platform === 'linux'
+    //     bubblewrap(bwrap) は Linux 専用ツールのため、Linux 以外では使えません。
+    //     Python の sys.platform == 'linux' に相当します。
+    //   条件2: config.sandbox
+    //     CLI の --sandbox フラグで有効化された場合にのみサンドボックスを使います。
+    //     config.sandbox は boolean なので truthy 判定され、
+    //     Python の if config.sandbox: と同じ書き方です。
+    //
+    // つまり「Linux 上 かつ --sandbox オプションが指定されたときだけ bwrap を使う」という分岐です。
     if (process.platform === 'linux' && config.sandbox) {
         // WindowsやmacOSでは bubblewrap が使えないため、Linuxかつ config.sandbox=true のときだけ有効化します。
         const sandbox = new Sandbox();
